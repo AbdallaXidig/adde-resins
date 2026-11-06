@@ -12,7 +12,7 @@ export async function Footer() {
   const socials = [["LinkedIn", s.linkedin], ["Facebook", s.facebook], ["YouTube", s.youtube]].filter(([, url]) => url);
 
   return (
-    <footer className="bg-brown text-white">
+    <footer className="bg-brown text-white print:hidden">
       <div className="wrap grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
         <div>
           <div className="inline-block rounded-lg bg-white p-2.5"><Logo className="h-14 w-auto" /></div>

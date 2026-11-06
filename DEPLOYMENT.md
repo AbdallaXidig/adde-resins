@@ -25,6 +25,7 @@ Set these on the host (never commit them):
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | first deploy | Used by the seed to create the first Super admin (password 12+ characters). Remove `ADMIN_PASSWORD` once you have signed in and changed it |
 | `UPLOAD_DIR` | recommended | Absolute path on the persistent disk, e.g. `/var/data/uploads` |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `NOTIFY_EMAIL` | optional | Staff email alerts for new submissions |
+| `SHEET_WEBHOOK_URL`, `SHEET_WEBHOOK_SECRET` | optional | Copies every quotation, order, RFQ and WhatsApp cart click to a Google Sheet. See [docs/GOOGLE-SHEET.md](docs/GOOGLE-SHEET.md) |
 | `PAYMENT_PROVIDER` | optional | Keep `none`. No payment provider is implemented yet |
 
 ## 3. Build and release

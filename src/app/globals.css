@@ -192,3 +192,10 @@ h1, h2, h3, h4 {
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
   .group:hover .reveal-zoom { transform: none; }
 }
+
+/* Quotation documents print on one clean A4 page: site chrome is hidden with print:hidden. */
+@media print {
+  @page { size: A4; margin: 14mm; }
+  body { background: #fff; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

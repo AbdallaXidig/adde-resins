@@ -1,4 +1,5 @@
 import "server-only";
+import { randomBytes } from "node:crypto";
 import { Prisma, type WorkflowStatus } from "@prisma/client";
 import { prisma } from "./db";
 import { nextReference } from "./references";
@@ -125,6 +126,7 @@ export async function createOrder(input: OrderInput) {
     return tx.order.create({
       data: {
         reference: await nextReference(tx, "ORD"),
+        accessToken: randomBytes(18).toString("base64url"),
         type: input.type,
         customerId: customer.id,
         shippingCountry: input.shippingCountry,

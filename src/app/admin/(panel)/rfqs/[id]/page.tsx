@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requirePermission } from "@/lib/auth";
-import { setRfqStatus } from "../../../actions/workflow";
+import { resendRfqToSheet, setRfqStatus } from "../../../actions/workflow";
+import { SheetStatus } from "@/components/admin/SheetStatus";
 import { Flash, type FlashParams } from "@/components/admin/Flash";
 import { ContactLinks, StatusForm, Timeline } from "@/components/admin/StatusForm";
 import { PageHeader, Panel, StatusBadge, fmtDate, fmtQty } from "@/components/admin/ui";
@@ -42,7 +43,10 @@ export default async function RfqDetail({ params, searchParams }: { params: Prom
           </Panel>
           <Panel title="Timeline"><Timeline events={rfq.statusEvents} /></Panel>
         </div>
-        <Panel title="Update status"><StatusForm id={rfq.id} status={rfq.status} adminNotes={rfq.adminNotes} action={setRfqStatus} hint="Typical flow: Under Review → Quotation Sent → Confirmed." /></Panel>
+        <div className="space-y-6">
+          <Panel title="Update status"><StatusForm id={rfq.id} status={rfq.status} adminNotes={rfq.adminNotes} action={setRfqStatus} hint="Typical flow: Under Review → Quotation Sent → Confirmed." /></Panel>
+          <Panel title="Online sheet"><SheetStatus id={rfq.id} syncedAt={rfq.sheetSyncedAt} error={rfq.sheetError} action={resendRfqToSheet} /></Panel>
+        </div>
       </div>
     </>
   );

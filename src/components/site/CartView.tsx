@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Info, ShoppingCart, Trash2 } from "lucide-react";
+import { FileText, Info, MessageCircle, ShoppingCart, Trash2 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useCart } from "./CartProvider";
 import { Honeypot, TextAreaField, TextField } from "./Field";
@@ -14,13 +14,14 @@ type CatalogEntry = {
 };
 const kg = (q: number, u: "KG" | "MT") => (u === "MT" ? q * 1000 : q);
 
-export function CartView({ catalog, bulkThresholdKg }: { catalog: Record<string, CatalogEntry>; bulkThresholdKg: number }) {
+export function CartView({ catalog, bulkThresholdKg, whatsapp }: { catalog: Record<string, CatalogEntry>; bulkThresholdKg: number; whatsapp: string }) {
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
   const { items, ready, update, remove, clear } = useCart();
   const { errors, formError, pending, submit } = useSubmit("/api/orders");
-  const [type, setType] = useState<"ORDER" | "QUOTE_REQUEST">("ORDER");
+  const [type, setType] = useState<"ORDER" | "QUOTE_REQUEST">("QUOTE_REQUEST");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const lines = useMemo(() => items.map((i) => {
     const c = catalog[i.productId];
@@ -61,8 +62,33 @@ export function CartView({ catalog, bulkThresholdKg }: { catalog: Record<string,
     });
     if (result) {
       clear();
-      router.push({ pathname: "/confirmation", query: { ref: result.reference } });
+      // The quotation document is the confirmation: it shows the reference and can be saved as PDF.
+      if (result.token) router.push({ pathname: `/quotation/${result.reference}`, query: { k: result.token } });
+      else router.push({ pathname: "/confirmation", query: { ref: result.reference } });
     }
+  }
+
+  // Sends the cart (and any details already typed) to the sales team on WhatsApp, and logs the lead.
+  function onWhatsApp(e: React.MouseEvent<HTMLAnchorElement>) {
+    const form = formRef.current ? new FormData(formRef.current) : new FormData();
+    const v = (k: string) => String(form.get(k) ?? "").trim();
+    const listed = lines.filter((l) => l.c);
+    const text = [
+      t("cart.waIntro"),
+      ...listed.map(({ item, c }) => `• ${c!.name}${item.grade ? ` (${item.grade})` : ""}: ${item.quantity} ${item.unit}`),
+      "",
+      ...[[t("forms.name"), v("name")], [t("forms.company"), v("company")], [t("forms.phone"), v("phone")], [t("forms.email"), v("email")], [t("cart.shippingCountry"), v("shippingCountry")], [t("cart.shippingPort"), v("shippingPort")]]
+        .filter(([, val]) => val).map(([k, val]) => `${k}: ${val}`),
+    ].join("\n").trim();
+    e.currentTarget.href = `https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
+    if (v("website")) return;
+    fetch("/api/whatsapp-click", {
+      method: "POST", keepalive: true, headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: v("name"), company: v("company"), phone: v("phone"), email: v("email"), country: v("shippingCountry"), locale,
+        items: listed.filter((l) => l.item.quantity > 0).map(({ item }) => ({ productId: item.productId, grade: item.grade, quantity: item.quantity, unit: item.unit })),
+      }),
+    }).catch(() => {});
   }
 
   return (
@@ -110,7 +136,7 @@ export function CartView({ catalog, bulkThresholdKg }: { catalog: Record<string,
         <Link href="/products" className="inline-block text-sm font-semibold text-orange-dark underline">{t("cart.continue")}</Link>
       </div>
 
-      <form onSubmit={onSubmit} className="relative space-y-5">
+      <form ref={formRef} onSubmit={onSubmit} className="relative space-y-5">
         <Honeypot />
         <div className="card p-5">
           <h2 className="text-xl font-semibold">{t("cart.summary")}</h2>
@@ -125,7 +151,7 @@ export function CartView({ catalog, bulkThresholdKg }: { catalog: Record<string,
         <fieldset className="card p-5">
           <legend className="sr-only">{t("cart.howTo")}</legend>
           <p className="field-label">{t("cart.howTo")}</p>
-          {(["ORDER", "QUOTE_REQUEST"] as const).map((v) => (
+          {(["QUOTE_REQUEST", "ORDER"] as const).map((v) => (
             <label key={v} className={`mt-2 flex cursor-pointer gap-3 rounded-lg border p-3 ${type === v ? "border-orange bg-[#fdf6f0]" : "border-line"}`}>
               <input type="radio" name="type" value={v} checked={type === v} onChange={() => setType(v)} className="mt-1 accent-[#c9520c]" />
               <span><span className="block font-semibold text-brown">{v === "ORDER" ? t("cart.typeOrder") : t("cart.typeQuote")}</span>
@@ -137,22 +163,32 @@ export function CartView({ catalog, bulkThresholdKg }: { catalog: Record<string,
         <div className="card grid gap-4 p-5">
           <h2 className="text-xl font-semibold">{t("cart.customerInfo")}</h2>
           <TextField label={t("forms.name")} name="name" required autoComplete="name" maxLength={120} error={errors.name} />
-          <TextField label={t("forms.company")} name="company" autoComplete="organization" maxLength={160} error={errors.company} />
           <TextField label={t("forms.email")} name="email" type="email" required autoComplete="email" maxLength={200} error={errors.email} />
-          <TextField label={t("forms.phone")} name="phone" type="tel" autoComplete="tel" maxLength={40} error={errors.phone} dir="ltr" />
-          <h2 className="mt-2 text-xl font-semibold">{t("cart.shipping")}</h2>
+          <TextField label={t("cart.phoneWhatsapp")} name="phone" type="tel" autoComplete="tel" maxLength={40} error={errors.phone} dir="ltr" />
           <TextField label={t("cart.shippingCountry")} name="shippingCountry" required autoComplete="country-name" maxLength={80} error={errors.shippingCountry} />
-          <TextField label={t("cart.shippingPort")} name="shippingPort" maxLength={120} error={errors.shippingPort} />
-          <TextAreaField label={t("cart.shippingAddress")} name="shippingAddress" rows={2} maxLength={500} error={errors.shippingAddress} />
-          <TextAreaField label={t("cart.notes")} name="notes" rows={3} maxLength={4000} error={errors.notes} />
+          <details className="group rounded-lg border border-line px-4 py-3" open={!!(errors.company || errors.shippingPort || errors.shippingAddress || errors.notes)}>
+            <summary className="cursor-pointer font-semibold text-brown">{t("cart.moreDetails")}</summary>
+            <div className="mt-3 grid gap-4">
+              <TextField label={t("forms.company")} name="company" autoComplete="organization" maxLength={160} error={errors.company} />
+              <TextField label={t("cart.shippingPort")} name="shippingPort" maxLength={120} error={errors.shippingPort} />
+              <TextAreaField label={t("cart.shippingAddress")} name="shippingAddress" rows={2} maxLength={500} error={errors.shippingAddress} />
+              <TextAreaField label={t("cart.notes")} name="notes" rows={3} maxLength={4000} error={errors.notes} />
+            </div>
+          </details>
         </div>
 
         <p className="flex gap-2 text-sm text-muted"><Info size={16} aria-hidden className="mt-0.5 shrink-0" />{t("cart.noPayment")}</p>
         {formError && <p role="alert" className="rounded-lg bg-[#f9e1e2] px-3 py-2 text-sm text-[#86141a]">{formError}</p>}
         {errors["items"] && <p role="alert" className="text-sm text-burgundy">{errors["items"]}</p>}
         <button type="submit" disabled={pending || blocked} className="btn btn-primary w-full text-base">
+          <FileText size={18} aria-hidden />
           {pending ? t("forms.sending") : type === "ORDER" ? t("cart.submitOrder") : t("cart.submitQuote")}
         </button>
+        <div className="flex items-center gap-3 text-xs uppercase tracking-wider text-muted" aria-hidden><span className="h-px flex-1 bg-line" />{t("cart.or")}<span className="h-px flex-1 bg-line" /></div>
+        <a href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`} onClick={onWhatsApp} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp w-full text-base">
+          <MessageCircle size={18} aria-hidden />{t("cart.sendWhatsapp")}
+        </a>
+        <p className="text-center text-xs text-muted">{t("cart.whatsappHint")}</p>
       </form>
     </div>
   );

@@ -5,6 +5,7 @@ import { audit, requirePermission } from "@/lib/auth";
 import { INQUIRY_STATUSES, WORKFLOW_STATUSES } from "@/lib/status";
 import { updateOrderStatus, updateRfqStatus } from "@/lib/workflows";
 import { done, fail, optStr, str } from "@/lib/admin-helpers";
+import { syncOrderToSheet, syncRfqToSheet } from "@/lib/sheets";
 
 export async function setRfqStatus(f: FormData) {
   const user = await requirePermission("rfqs");
@@ -49,4 +50,20 @@ export async function updateCustomer(f: FormData) {
   });
   await audit(user.id, "update", "Customer", id);
   done(`/admin/customers/${id}`, "Customer saved");
+}
+
+export async function resendOrderToSheet(f: FormData) {
+  await requirePermission("orders");
+  const id = str(f, "id", 40);
+  const r = await syncOrderToSheet(id);
+  if (!r.ok) fail(null, `Not sent to the sheet: ${r.error}`, `/admin/orders/${id}`);
+  done(`/admin/orders/${id}`, "Sent to the online sheet");
+}
+
+export async function resendRfqToSheet(f: FormData) {
+  await requirePermission("rfqs");
+  const id = str(f, "id", 40);
+  const r = await syncRfqToSheet(id);
+  if (!r.ok) fail(null, `Not sent to the sheet: ${r.error}`, `/admin/rfqs/${id}`);
+  done(`/admin/rfqs/${id}`, "Sent to the online sheet");
 }

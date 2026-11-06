@@ -257,13 +257,19 @@
     "howTo": "How would you like to proceed?",
     "typeOrder": "Submit order",
     "typeOrderHint": "Place the order for our team to confirm.",
-    "typeQuote": "Request a quotation",
-    "typeQuoteHint": "Receive wholesale pricing before you commit.",
+    "typeQuote": "Get a quotation",
+    "typeQuoteHint": "Generate a quotation document now. Our team confirms the final price.",
     "submitOrder": "Submit order",
-    "submitQuote": "Send quotation request",
+    "submitQuote": "Generate my quotation",
     "unavailable": "No longer available",
     "belowMoq": "Minimum order: {qty} {unit}",
-    "continue": "Continue browsing"
+    "continue": "Continue browsing",
+    "phoneWhatsapp": "Phone / WhatsApp",
+    "moreDetails": "Add company, port and notes (optional)",
+    "or": "or",
+    "sendWhatsapp": "Send this cart on WhatsApp",
+    "whatsappHint": "Opens WhatsApp with your cart and any details you typed above.",
+    "waIntro": "Hello Adde International, I would like a quotation for:"
   },
   "confirmation": {
     "title": "Thank you. We have received your request.",
@@ -397,7 +403,7 @@
     "title": "Privacy notice",
     "sections": [
       { "title": "What we collect", "text": "When you send a quotation request, order or inquiry, we collect the contact and company details and the request details you enter." },
-      { "title": "How we use it", "text": "We use this information to respond to your request, prepare quotations, fulfil orders and keep business records. We do not sell your information." },
+      { "title": "How we use it", "text": "We use this information to respond to your request, prepare quotations, fulfil orders and keep business records, including a copy in our internal tracking spreadsheet. If you use the WhatsApp button, the details you typed are sent with your message through WhatsApp. We do not sell your information." },
       { "title": "Your cart", "text": "Your cart is saved in your own browser until you submit it." },
       { "title": "Your choices", "text": "To ask about, correct or delete your information, contact us using the details on our contact page." }
     ]
@@ -408,5 +414,36 @@
     "title": "Something went wrong",
     "text": "We could not load this page. Please try again in a moment.",
     "retry": "Try again"
+  },
+  "quotation": {
+    "titleQuote": "Quotation",
+    "titleOrder": "Pro-forma invoice",
+    "readyQuote": "Your quotation is ready",
+    "readyOrder": "Your order has been received",
+    "readyText": "Save or print this document and keep the reference number. Our team will confirm prices and availability by email or WhatsApp.",
+    "print": "Print / Save as PDF",
+    "whatsapp": "Send to us on WhatsApp",
+    "whatsappText": "Hello Adde International, here is my quotation {ref}: {link}",
+    "continue": "Continue browsing",
+    "reference": "Reference",
+    "date": "Date",
+    "status": "Status",
+    "statusPending": "Awaiting confirmation",
+    "preparedFor": "Prepared for",
+    "destination": "Destination",
+    "product": "Product",
+    "grade": "Grade",
+    "quantity": "Quantity",
+    "unitPrice": "Price per kg",
+    "amount": "Amount",
+    "subtotal": "Subtotal (priced items)",
+    "unpricedNote": "Items marked \"Price on request\" are not included in the subtotal.",
+    "notes": "Notes",
+    "terms": "Terms",
+    "term1": "Generated automatically from the prices published on our website on the date shown.",
+    "term2": "Items marked \"Price on request\" will be priced by our team.",
+    "term3": "Freight, insurance, duties and bank charges are not included unless confirmed in writing.",
+    "term4": "Prices, quantities and availability are confirmed in writing by Adde International before any payment. This is not a tax invoice.",
+    "sampleNote": "This document includes sample catalogue listings. Our team will confirm the actual product details."
   }
 }

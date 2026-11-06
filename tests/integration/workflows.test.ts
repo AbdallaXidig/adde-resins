@@ -63,6 +63,21 @@ describe("public workflows persist to PostgreSQL", () => {
     }
   });
 
+  it("opens the quotation document only with its secret link", async () => {
+    const product = await prisma.product.findFirstOrThrow({ where: { status: "PUBLISHED", cartEnabled: true } });
+    const res = await post("/api/orders", { name: "Quote Buyer", email, shippingCountry: "Oman", type: "QUOTE_REQUEST", items: [{ productId: product.id, quantity: 2, unit: "MT" }] });
+    expect(res.status).toBe(201);
+    const { reference, token } = await res.json();
+    expect(token).toMatch(/^[\w-]{24}$/);
+    const doc = await fetch(`${BASE}/quotation/${reference}?k=${token}`);
+    expect(doc.status).toBe(200);
+    const html = await doc.text();
+    expect(html).toContain(reference);
+    expect(html).toContain("Oman");
+    expect((await fetch(`${BASE}/quotation/${reference}?k=${"x".repeat(24)}`)).status).toBe(404);
+    expect((await fetch(`${BASE}/quotation/${reference}`)).status).toBe(404);
+  });
+
   it("keeps admin pages behind sign-in", async () => {
     const res = await fetch(`${BASE}/admin/orders`, { redirect: "manual" });
     expect([302, 307]).toContain(res.status);

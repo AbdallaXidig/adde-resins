@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requirePermission } from "@/lib/auth";
-import { setOrderStatus } from "../../../actions/workflow";
+import { resendOrderToSheet, setOrderStatus } from "../../../actions/workflow";
+import { SheetStatus } from "@/components/admin/SheetStatus";
+import { localePath } from "@/lib/seo";
 import { Flash, type FlashParams } from "@/components/admin/Flash";
 import { ContactLinks, StatusForm, Timeline } from "@/components/admin/StatusForm";
 import { PageHeader, Panel, StatusBadge, fmtDate, fmtMoney, fmtQty } from "@/components/admin/ui";
@@ -42,7 +44,16 @@ export default async function OrderDetail({ params, searchParams }: { params: Pr
           </Panel>
           <Panel title="Timeline"><Timeline events={order.statusEvents} /></Panel>
         </div>
-        <Panel title="Update status"><StatusForm id={order.id} status={order.status} adminNotes={order.adminNotes} action={setOrderStatus} hint={order.stockCommitted ? "Stock is currently committed for this order." : "Confirming deducts tracked stock; cancelling returns it."} /></Panel>
+        <div className="space-y-6">
+          <Panel title="Update status"><StatusForm id={order.id} status={order.status} adminNotes={order.adminNotes} action={setOrderStatus} hint={order.stockCommitted ? "Stock is currently committed for this order." : "Confirming deducts tracked stock; cancelling returns it."} /></Panel>
+          {order.accessToken && (
+            <Panel title={order.type === "ORDER" ? "Pro-forma invoice" : "Quotation document"}>
+              <p className="text-sm text-muted">The document the customer received, with today&apos;s order details. Print it or save it as PDF.</p>
+              <a href={`${localePath(order.locale, `/quotation/${order.reference}`)}?k=${order.accessToken}`} target="_blank" rel="noopener" className="btn btn-outline mt-3 text-sm">Open document</a>
+            </Panel>
+          )}
+          <Panel title="Online sheet"><SheetStatus id={order.id} syncedAt={order.sheetSyncedAt} error={order.sheetError} action={resendOrderToSheet} /></Panel>
+        </div>
       </div>
     </>
   );

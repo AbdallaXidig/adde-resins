@@ -9,14 +9,14 @@ export function useSubmit(url: string) {
   const t = useTranslations();
   const [state, setState] = useState<SubmitState>({ errors: {}, formError: null, pending: false });
 
-  async function submit(body: unknown): Promise<{ reference: string } | null> {
+  async function submit(body: unknown): Promise<{ reference: string; token?: string } | null> {
     setState({ errors: {}, formError: null, pending: true });
     try {
       const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.reference) {
         setState({ errors: {}, formError: null, pending: false });
-        return { reference: data.reference };
+        return { reference: data.reference, token: typeof data.token === "string" ? data.token : undefined };
       }
       if (res.status === 429) {
         setState({ errors: {}, formError: t("errors.rateLimited"), pending: false });

@@ -17,7 +17,7 @@ export async function Header() {
   const cats = categories.map((c) => ({ slug: c.slug, name: c.name }));
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-[0_1px_0_rgb(64_35_19/10%)]">
+    <header className="sticky top-0 z-40 bg-white print:hidden shadow-[0_1px_0_rgb(64_35_19/10%)]">
       <div className="hidden bg-brown text-[13px] text-white md:block">
         <div className="wrap flex h-9 items-center justify-between gap-6">
           <p className="flex items-center gap-4 truncate">

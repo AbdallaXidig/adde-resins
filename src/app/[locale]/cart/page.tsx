@@ -22,7 +22,7 @@ export default async function CartPage() {
     <section className="wrap py-10 lg:py-14">
       <p className="eyebrow">{t("eyebrow")}</p>
       <h1 className="h-display mt-3">{t("title")}</h1>
-      <CartView catalog={catalog} bulkThresholdKg={s.bulkThresholdKg} />
+      <CartView catalog={catalog} bulkThresholdKg={s.bulkThresholdKg} whatsapp={s.whatsapp} />
     </section>
   );
 }

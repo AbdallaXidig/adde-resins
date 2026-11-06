@@ -226,6 +226,9 @@ model Rfq {
   status             WorkflowStatus @default(PENDING)
   adminNotes         String?
   locale             String         @default("en")
+  // Copy to the online tracking sheet (best effort; see src/lib/sheets.ts).
+  sheetSyncedAt      DateTime?
+  sheetError         String?
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
 
@@ -255,6 +258,11 @@ model Order {
   stockCommitted     Boolean        @default(false)
   adminNotes         String?
   locale             String         @default("en")
+  // Secret part of the customer's quotation document link (/quotation/REF?k=TOKEN).
+  accessToken        String?        @unique
+  // Copy to the online tracking sheet (best effort; see src/lib/sheets.ts).
+  sheetSyncedAt      DateTime?
+  sheetError         String?
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
 

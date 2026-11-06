@@ -6,7 +6,9 @@ The website, catalogue, ordering system and admin dashboard for **Adde Internati
 - **Product catalogue** with search, filters and side-by-side comparison.
 - **Two ways to buy:**
   - a **Request for Quotation** (RFQ) form, quoted in KG or MT to a destination port;
-  - a **shopping cart** that submits an order or a cart quotation.
+  - a **shopping cart** with a short form that **generates a quotation document** (print or save as PDF), or submits an order as a pro-forma invoice;
+  - a **Send this cart on WhatsApp** button that opens WhatsApp with the cart and the customer's details.
+- **Online tracking sheet:** every quotation, order, RFQ and WhatsApp cart click is copied to a Google Sheet. See [docs/GOOGLE-SHEET.md](docs/GOOGLE-SHEET.md).
 - **Reference numbers** like `ADI-RFQ-2026-00001` for every RFQ, order and inquiry.
 - **Contact routes:** WhatsApp and email throughout, plus optional staff email alerts.
 - **Secure admin** with role-based permissions covering products, categories, images, specifications, pricing, stock, customers, orders, RFQs, inquiries, website text, users, internal product research, reports and an activity log.
@@ -77,6 +79,7 @@ tests/                        Unit and integration tests
 ### Ordering rules
 - **Prices** always come from the database. The browser's cart never sends a price. Products without a published price show **"Price on request"** and are quoted by staff.
 - **No online payment is taken.** Checkout saves the order and staff follow up with an invoice. A payment provider can be added later through `PAYMENT_PROVIDER` and `src/lib/payments.ts`.
+- **Quotation documents:** after the cart form, the customer lands on their quotation (or pro-forma invoice for orders) at `/quotation/REFERENCE?k=…`. The link holds a random key, so references can't be guessed to view someone else's document. Unpriced lines show "Price on request". The document says it is not a tax invoice, and that Adde International confirms prices in writing before payment. Staff open it from the order page in the admin.
 - **Bulk orders:** a cart above the bulk threshold (Admin → Settings, default 1,000 kg) suggests sending it as a quotation request instead.
 - **Stock** is optional per product. When tracked, it is deducted when an order moves to *Confirmed* (or later) and returned if the order is cancelled. Every change is logged.
 - **Statuses:** Pending → Under Review → Quotation Sent → Confirmed → Processing → Ready for Shipment → Shipped → Delivered, or Cancelled. Each change is recorded on a timeline with the staff member's name.
@@ -128,6 +131,7 @@ Per-page titles and descriptions target the agreed keywords (Somali Frankincense
 2. **Location wording:** the site says *Puntland, Somalia*. The existing solar site lists a Mogadishu head office with branches. Adjust in Settings and Website content if needed.
 3. **Product facts:** verify every sample listing, especially *Frankincense Premium / Hojari*. It is an unpublished draft because Hojari is an Omani trade name; publish it only for a verified supply.
 4. **Translations:** have native speakers review Somali and Arabic.
-5. **Email alerts:** configure SMTP in `.env` so staff receive new RFQs, orders and inquiries. Submissions are saved either way.
+5. **Tracking sheet:** connect the Google Sheet (docs/GOOGLE-SHEET.md) so every quotation is logged.
+6. **Email alerts:** configure SMTP in `.env` so staff receive new RFQs, orders and inquiries. Submissions are saved either way.
 
 See **[DEPLOYMENT.md](DEPLOYMENT.md)** to put the site online.
