@@ -39,19 +39,6 @@ export async function setInquiryStatus(f: FormData) {
   done(`/admin/inquiries/${id}`, "Inquiry updated");
 }
 
-export async function updateCustomer(f: FormData) {
-  const user = await requirePermission("customers");
-  const id = str(f, "id", 40);
-  const name = str(f, "name", 120);
-  if (!name) fail(f, "Name is required.");
-  await prisma.customer.update({
-    where: { id },
-    data: { name, company: optStr(f, "company", 160), phone: optStr(f, "phone", 40), country: optStr(f, "country", 80), notes: optStr(f, "notes") },
-  });
-  await audit(user.id, "update", "Customer", id);
-  done(`/admin/customers/${id}`, "Customer saved");
-}
-
 export async function resendOrderToSheet(f: FormData) {
   await requirePermission("orders");
   const id = str(f, "id", 40);

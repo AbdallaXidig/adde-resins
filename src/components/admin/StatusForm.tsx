@@ -30,11 +30,11 @@ export function Timeline({ events }: { events: { id: string; fromStatus: Workflo
   );
 }
 
-export function ContactLinks({ email, phone, reference, whatsapp }: { email: string; phone: string | null; reference: string; whatsapp?: boolean }) {
+export function ContactLinks({ email, phone, reference, whatsapp }: { email: string | null; phone: string | null; reference: string; whatsapp?: boolean }) {
   const digits = phone?.replace(/\D/g, "");
   return (
     <div className="flex flex-wrap gap-2">
-      <a className="btn btn-outline min-h-9 py-1.5 text-sm" href={`mailto:${email}?subject=${encodeURIComponent(`Adde International - ${reference}`)}`}>Email customer</a>
+      {email && <a className="btn btn-outline min-h-9 py-1.5 text-sm" href={`mailto:${email}?subject=${encodeURIComponent(`Adde International - ${reference}`)}`}>Email customer</a>}
       {whatsapp !== false && digits && digits.length >= 8 && <a className="btn btn-whatsapp min-h-9 py-1.5 text-sm" target="_blank" rel="noopener noreferrer" href={`https://wa.me/${digits}?text=${encodeURIComponent(`Hello, this is Adde International regarding ${reference}.`)}`}>WhatsApp</a>}
     </div>
   );

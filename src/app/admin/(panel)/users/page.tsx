@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { requirePermission } from "@/lib/auth";
-import { can, PERMISSIONS, ROLE_LABELS } from "@/lib/permissions";
+import { can, PERMISSIONS, ROLE_LABELS, ROLE_SUMMARY } from "@/lib/permissions";
 import { createUser, updateUser } from "../../actions/users";
 import { Flash, type FlashParams } from "@/components/admin/Flash";
 import { PageHeader, Panel, fmtDate } from "@/components/admin/ui";
@@ -23,7 +23,7 @@ export default async function Users({ searchParams }: { searchParams: FlashParam
             <input type="hidden" name="id" value={u.id} />
             <div><p className="font-semibold">{u.name}{u.id === me.id && <span className="chip ms-2">you</span>}</p><p className="text-sm text-muted">{u.email}</p><p className="text-xs text-muted">Last sign-in {fmtDate(u.lastLoginAt)}</p></div>
             <label className="text-sm"><span className="field-label">Role</span><select name="role" defaultValue={u.role} className="field">{ROLES.map((r) => <option key={r} value={r}>{ROLE_LABELS[r]}</option>)}</select></label>
-            <label className="text-sm"><span className="field-label">New password</span><input name="password" type="password" minLength={12} autoComplete="new-password" placeholder="Leave empty to keep" className="field" /></label>
+            <label className="text-sm"><span className="field-label">New password</span><input name="password" type="password" minLength={8} autoComplete="new-password" placeholder="Leave empty to keep" className="field" /></label>
             <label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" name="active" defaultChecked={u.active} /> Active</label>
             <button type="submit" className="btn btn-primary">Save</button>
           </form>
@@ -35,7 +35,7 @@ export default async function Users({ searchParams }: { searchParams: FlashParam
             <input name="name" required placeholder="Full name" aria-label="Full name" className="field" />
             <input name="email" type="email" required placeholder="Email" aria-label="Email" className="field" />
             <select name="role" defaultValue="SALES" aria-label="Role" className="field">{ROLES.map((r) => <option key={r} value={r}>{ROLE_LABELS[r]}</option>)}</select>
-            <input name="password" type="password" required minLength={12} autoComplete="new-password" placeholder="Temporary password (12+)" aria-label="Temporary password" className="field" />
+            <input name="password" type="password" required minLength={8} autoComplete="new-password" placeholder="Temporary password (8+)" aria-label="Temporary password" className="field" />
             <button type="submit" className="btn btn-primary sm:col-span-2">Create user</button>
           </form>
         </Panel>
@@ -44,6 +44,7 @@ export default async function Users({ searchParams }: { searchParams: FlashParam
             <thead><tr><th>Area</th>{ROLES.map((r) => <th key={r}>{ROLE_LABELS[r]}</th>)}</tr></thead>
             <tbody>{PERMISSIONS.map((p) => <tr key={p}><td className="capitalize">{p}</td>{ROLES.map((r) => <td key={r}>{can(r, p) ? "✓" : ""}</td>)}</tr>)}</tbody>
           </table></div>
+          <ul className="mt-4 space-y-1.5 text-sm">{ROLES.map((r) => <li key={r}><strong>{ROLE_LABELS[r]}:</strong> <span className="text-muted">{ROLE_SUMMARY[r]}</span></li>)}</ul>
         </Panel>
       </div>
     </>

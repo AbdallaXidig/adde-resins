@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client";
 
-export type RefPrefix = "RFQ" | "ORD" | "INQ";
+export type RefPrefix = "RFQ" | "ORD" | "INQ" | "QUO" | "INV" | "PO" | "RCT" | "PAY" | "EXP";
 
 export function formatReference(prefix: RefPrefix, year: number, n: number) {
   return `ADI-${prefix}-${year}-${String(n).padStart(5, "0")}`;

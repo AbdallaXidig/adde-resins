@@ -4,11 +4,11 @@ import { prisma } from "@/lib/db";
 import { audit, hashPassword, requirePermission } from "@/lib/auth";
 import { done, fail, str } from "@/lib/admin-helpers";
 
-const ROLES: Role[] = ["SUPER_ADMIN", "MANAGER", "SALES", "CONTENT"];
+const ROLES: Role[] = ["SUPER_ADMIN", "MANAGER", "SALES", "CONTENT", "ACCOUNTANT"];
 const BACK = "/admin/users";
 
 function checkPassword(p: string) {
-  if (p.length < 12) fail(null, "Passwords must be at least 12 characters.", BACK);
+  if (p.length < 8) fail(null, "Passwords must be at least 8 characters.", BACK);
 }
 
 export async function createUser(f: FormData) {

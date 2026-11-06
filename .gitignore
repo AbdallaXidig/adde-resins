@@ -13,3 +13,4 @@ playwright-report/
 .pg.log
 *.log
 .claude/settings.local.json
+ADMIN-LOGIN.txt

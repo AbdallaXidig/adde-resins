@@ -11,10 +11,11 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const user = await getCurrentUser();
   if (!user) redirect("/admin/login");
   const allowed = PERMISSIONS.filter((p) => can(user.role, p));
-  const [rfqs, orders, inquiries] = await Promise.all([
+  const [rfqs, orders, inquiries, overdue] = await Promise.all([
     prisma.rfq.count({ where: { status: "PENDING" } }),
     prisma.order.count({ where: { status: "PENDING" } }),
     prisma.inquiry.count({ where: { status: "NEW" } }),
+    prisma.salesDocument.count({ where: { kind: "INVOICE", status: { in: ["ISSUED", "PARTIALLY_PAID"] }, dueDate: { lt: new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z") } } }),
   ]);
   return (
     <div className="lg:grid lg:min-h-screen lg:grid-cols-[260px_1fr]">
@@ -22,7 +23,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         <Link href="/admin" className="font-serif text-lg text-white lg:mb-6 lg:px-3 lg:pt-2">Adde International<span className="block text-xs font-sans text-white/60">Administration</span></Link>
         <div className="flex items-center gap-1 lg:block">
           <form action={logoutAction} className="lg:hidden"><button type="submit" className="grid size-11 place-items-center rounded-lg text-white" aria-label="Sign out"><LogOut size={20} aria-hidden /></button></form>
-          <AdminNav allowed={allowed} counts={{ rfqs, orders, inquiries }} />
+          <AdminNav allowed={allowed} counts={{ rfqs, orders, inquiries, overdue }} />
         </div>
         <div className="hidden lg:mt-auto lg:block lg:border-t lg:border-white/15 lg:pt-4">
           <p className="px-3 text-sm text-white">{user.name}</p>

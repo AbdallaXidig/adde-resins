@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db";
 import { requirePermission } from "@/lib/auth";
 import { resendRfqToSheet, setRfqStatus } from "../../../actions/workflow";
 import { SheetStatus } from "@/components/admin/SheetStatus";
+import { quotationFromRfqAction } from "../../../actions/finance";
+import { can } from "@/lib/permissions";
 import { Flash, type FlashParams } from "@/components/admin/Flash";
 import { ContactLinks, StatusForm, Timeline } from "@/components/admin/StatusForm";
 import { PageHeader, Panel, StatusBadge, fmtDate, fmtQty } from "@/components/admin/ui";
@@ -11,7 +13,7 @@ import { PageHeader, Panel, StatusBadge, fmtDate, fmtQty } from "@/components/ad
 export const metadata = { title: "Quotation request" };
 
 export default async function RfqDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: FlashParams }) {
-  await requirePermission("rfqs");
+  const user = await requirePermission("rfqs");
   const [{ id }, sp] = await Promise.all([params, searchParams]);
   const rfq = await prisma.rfq.findUnique({ where: { id }, include: { customer: true, product: true, statusEvents: { orderBy: { createdAt: "desc" }, include: { user: { select: { name: true } } } } } });
   if (!rfq) notFound();
@@ -45,6 +47,12 @@ export default async function RfqDetail({ params, searchParams }: { params: Prom
         </div>
         <div className="space-y-6">
           <Panel title="Update status"><StatusForm id={rfq.id} status={rfq.status} adminNotes={rfq.adminNotes} action={setRfqStatus} hint="Typical flow: Under Review → Quotation Sent → Confirmed." /></Panel>
+          {can(user.role, "sales") && (
+            <Panel title="Send a quotation">
+              <p className="mb-3 text-sm text-muted">Creates a draft quotation with this product and quantity. Set the price, then send it by WhatsApp or email.</p>
+              <form action={quotationFromRfqAction}><input type="hidden" name="rfqId" value={rfq.id} /><input type="hidden" name="_back" value={`/admin/rfqs/${rfq.id}`} /><button className="btn btn-primary text-sm">Create quotation</button></form>
+            </Panel>
+          )}
           <Panel title="Online sheet"><SheetStatus id={rfq.id} syncedAt={rfq.sheetSyncedAt} error={rfq.sheetError} action={resendRfqToSheet} /></Panel>
         </div>
       </div>

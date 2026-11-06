@@ -14,6 +14,7 @@ enum Role {
   MANAGER
   SALES
   CONTENT
+  ACCOUNTANT
 }
 
 model User {
@@ -127,6 +128,8 @@ model Product {
   rfqs           Rfq[]
   stockMovements StockMovement[]
   research       ResearchEntry[]
+  salesItems     SalesItem[]
+  purchaseItems  PurchaseItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -174,20 +177,35 @@ model StockMovement {
 
 // ---------- Customers and business workflows ----------
 
+enum CustomerSource {
+  WEBSITE
+  WALK_IN
+  PHONE
+  WHATSAPP
+  REFERRAL
+  TRADE_FAIR
+  OTHER
+}
+
 model Customer {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String         @id @default(cuid())
+  // Optional so walk-in and phone customers can be added without one. Website requests always have one.
+  email     String?        @unique
   name      String
   company   String?
   phone     String?
   country   String?
+  address   String?
+  source    CustomerSource @default(WEBSITE)
   notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
-  orders    Order[]
-  rfqs      Rfq[]
-  inquiries Inquiry[]
+  orders         Order[]
+  rfqs           Rfq[]
+  inquiries      Inquiry[]
+  salesDocuments SalesDocument[]
+  payments       Payment[]
 }
 
 enum WorkflowStatus {
@@ -266,8 +284,9 @@ model Order {
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
 
-  items        OrderItem[]
-  statusEvents StatusEvent[]
+  items          OrderItem[]
+  statusEvents   StatusEvent[]
+  salesDocuments SalesDocument[]
 
   @@index([status, createdAt])
 }
@@ -375,8 +394,11 @@ model Supplier {
   phone     String?
   website   String?
   notes     String?
+  address   String?
   active    Boolean  @default(true)
   entries   ResearchEntry[]
+  purchases Purchase[]
+  payments  Payment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -400,4 +422,221 @@ model ResearchEntry {
   verifiedAt    DateTime?
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
+}
+
+// ---------- Sales, purchasing and accounting ----------
+// Amounts are per kg for goods (quantities are entered in KG or MT), matching the catalogue.
+
+enum SalesDocKind {
+  QUOTATION
+  INVOICE
+}
+
+enum SalesDocStatus {
+  DRAFT
+  // Quotations
+  SENT
+  ACCEPTED
+  DECLINED
+  // Invoices
+  ISSUED
+  PARTIALLY_PAID
+  PAID
+  // Both
+  VOID
+}
+
+model SalesDocument {
+  id             String         @id @default(cuid())
+  number         String         @unique
+  kind           SalesDocKind
+  status         SalesDocStatus @default(DRAFT)
+  customerId     String
+  customer       Customer       @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  // The website order it was prepared from, if any.
+  orderId        String?
+  order          Order?         @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  // For invoices converted from a quotation.
+  quotationId    String?
+  issueDate      DateTime       @default(now())
+  // Invoices: payment due date. Quotations: valid until.
+  dueDate        DateTime?
+  currency       String         @default("USD")
+  subtotal       Decimal        @default(0) @db.Decimal(14, 2)
+  discount       Decimal        @default(0) @db.Decimal(14, 2)
+  shipping       Decimal        @default(0) @db.Decimal(14, 2)
+  tax            Decimal        @default(0) @db.Decimal(14, 2)
+  total          Decimal        @default(0) @db.Decimal(14, 2)
+  amountPaid     Decimal        @default(0) @db.Decimal(14, 2)
+  shipTo         String?
+  // Printed on the document.
+  notes          String?
+  internalNotes  String?
+  stockCommitted Boolean        @default(false)
+  // Secret part of the shareable document link.
+  accessToken    String?        @unique
+  createdByName  String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  items    SalesItem[]
+  payments Payment[]
+
+  @@index([kind, status, issueDate])
+  @@index([customerId])
+}
+
+model SalesItem {
+  id          String        @id @default(cuid())
+  documentId  String
+  document    SalesDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  description String
+  grade       String?
+  quantity    Decimal       @db.Decimal(14, 3)
+  unit        QuantityUnit
+  unitPrice   Decimal       @db.Decimal(12, 2)
+  lineTotal   Decimal       @db.Decimal(14, 2)
+  sortOrder   Int           @default(0)
+}
+
+enum PurchaseStatus {
+  DRAFT
+  ORDERED
+  RECEIVED
+  CANCELLED
+}
+
+model Purchase {
+  id            String         @id @default(cuid())
+  number        String         @unique
+  status        PurchaseStatus @default(DRAFT)
+  supplierId    String
+  supplier      Supplier       @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  // The supplier's own invoice or reference number.
+  supplierRef   String?
+  orderDate     DateTime       @default(now())
+  expectedDate  DateTime?
+  receivedDate  DateTime?
+  currency      String         @default("USD")
+  subtotal      Decimal        @default(0) @db.Decimal(14, 2)
+  shipping      Decimal        @default(0) @db.Decimal(14, 2)
+  otherCosts    Decimal        @default(0) @db.Decimal(14, 2)
+  total         Decimal        @default(0) @db.Decimal(14, 2)
+  amountPaid    Decimal        @default(0) @db.Decimal(14, 2)
+  notes         String?
+  stockReceived Boolean        @default(false)
+  createdByName String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  items    PurchaseItem[]
+  payments Payment[]
+
+  @@index([status, orderDate])
+  @@index([supplierId])
+}
+
+model PurchaseItem {
+  id          String       @id @default(cuid())
+  purchaseId  String
+  purchase    Purchase     @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
+  description String
+  grade       String?
+  quantity    Decimal      @db.Decimal(14, 3)
+  unit        QuantityUnit
+  unitCost    Decimal      @db.Decimal(12, 2)
+  lineTotal   Decimal      @db.Decimal(14, 2)
+  sortOrder   Int          @default(0)
+}
+
+enum AccountType {
+  CASH
+  BANK
+  MOBILE_MONEY
+}
+
+/** Where money is held: a cash box, a bank account, or a mobile money wallet. */
+model MoneyAccount {
+  id             String      @id @default(cuid())
+  name           String      @unique
+  type           AccountType
+  currency       String      @default("USD")
+  openingBalance Decimal     @default(0) @db.Decimal(14, 2)
+  active         Boolean     @default(true)
+  notes          String?
+  createdAt      DateTime    @default(now())
+
+  payments Payment[]
+  expenses Expense[]
+}
+
+enum PaymentDirection {
+  IN
+  OUT
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  EVC_PLUS
+  ZAAD
+  EDAHAB
+  SAHAL
+  CHEQUE
+  CARD
+  OTHER
+}
+
+/** Money received from customers (IN) or paid to suppliers and others (OUT). */
+model Payment {
+  id            String           @id @default(cuid())
+  number        String           @unique
+  direction     PaymentDirection
+  date          DateTime
+  amount        Decimal          @db.Decimal(14, 2)
+  currency      String           @default("USD")
+  method        PaymentMethod
+  accountId     String?
+  account       MoneyAccount?    @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  documentId    String?
+  document      SalesDocument?   @relation(fields: [documentId], references: [id], onDelete: Restrict)
+  purchaseId    String?
+  purchase      Purchase?        @relation(fields: [purchaseId], references: [id], onDelete: Restrict)
+  customerId    String?
+  customer      Customer?        @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  supplierId    String?
+  supplier      Supplier?        @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  // Transaction ID from the bank or mobile money service.
+  reference     String?
+  notes         String?
+  createdByName String?
+  createdAt     DateTime         @default(now())
+
+  @@index([date])
+  @@index([direction, date])
+}
+
+model Expense {
+  id            String        @id @default(cuid())
+  number        String        @unique
+  date          DateTime
+  category      String
+  description   String
+  amount        Decimal       @db.Decimal(14, 2)
+  currency      String        @default("USD")
+  method        PaymentMethod
+  accountId     String?
+  account       MoneyAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  payee         String?
+  reference     String?
+  notes         String?
+  createdByName String?
+  createdAt     DateTime      @default(now())
+
+  @@index([date])
+  @@index([category])
 }

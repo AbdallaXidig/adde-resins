@@ -14,6 +14,8 @@ export type CompanySettings = {
   youtube: string;
   showSampleBanner: boolean;
   bulkThresholdKg: number;
+  /** Printed on invoices: bank details, mobile money numbers, terms. */
+  paymentInstructions: string;
 };
 
 // Starting values. All are editable in Admin > Settings without a code change.
@@ -29,6 +31,7 @@ export const DEFAULT_SETTINGS: CompanySettings = {
   youtube: "",
   showSampleBanner: true,
   bulkThresholdKg: 1000,
+  paymentInstructions: "",
 };
 
 export const getSettings = unstable_cache(

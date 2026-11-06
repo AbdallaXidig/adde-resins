@@ -36,6 +36,7 @@ export async function saveSettings(f: FormData) {
     youtube: str(f, "youtube", 300),
     showSampleBanner: bool(f, "showSampleBanner"),
     bulkThresholdKg: num(f, "bulkThresholdKg") ?? DEFAULT_SETTINGS.bulkThresholdKg,
+    paymentInstructions: str(f, "paymentInstructions", 2000),
   };
   if (!/^\S+@\S+\.\S+$/.test(value.email)) fail(f, "Enter a valid email address.");
   if (value.whatsapp.length < 8) fail(f, "Enter the WhatsApp number with country code, digits only.");

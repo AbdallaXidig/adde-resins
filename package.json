@@ -16,7 +16,8 @@
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate",
-    "test:integration": "vitest run --config vitest.integration.config.mts"
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "admin:reset-password": "node --env-file=.env scripts/reset-password.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

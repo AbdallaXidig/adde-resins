@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requirePermission } from "@/lib/auth";
 import { resendOrderToSheet, setOrderStatus } from "../../../actions/workflow";
+import { salesDocFromOrderAction } from "../../../actions/finance";
+import { can } from "@/lib/permissions";
 import { SheetStatus } from "@/components/admin/SheetStatus";
 import { localePath } from "@/lib/seo";
 import { Flash, type FlashParams } from "@/components/admin/Flash";
@@ -12,9 +14,9 @@ import { PageHeader, Panel, StatusBadge, fmtDate, fmtMoney, fmtQty } from "@/com
 export const metadata = { title: "Order" };
 
 export default async function OrderDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: FlashParams }) {
-  await requirePermission("orders");
+  const user = await requirePermission("orders");
   const [{ id }, sp] = await Promise.all([params, searchParams]);
-  const order = await prisma.order.findUnique({ where: { id }, include: { customer: true, items: true, statusEvents: { orderBy: { createdAt: "desc" }, include: { user: { select: { name: true } } } } } });
+  const order = await prisma.order.findUnique({ where: { id }, include: { customer: true, items: true, salesDocuments: { select: { id: true, number: true, kind: true, status: true } }, statusEvents: { orderBy: { createdAt: "desc" }, include: { user: { select: { name: true } } } } } });
   if (!order) notFound();
   return (
     <>
@@ -50,6 +52,18 @@ export default async function OrderDetail({ params, searchParams }: { params: Pr
             <Panel title={order.type === "ORDER" ? "Pro-forma invoice" : "Quotation document"}>
               <p className="text-sm text-muted">The document the customer received, with today&apos;s order details. Print it or save it as PDF.</p>
               <a href={`${localePath(order.locale, `/quotation/${order.reference}`)}?k=${order.accessToken}`} target="_blank" rel="noopener" className="btn btn-outline mt-3 text-sm">Open document</a>
+            </Panel>
+          )}
+          {can(user.role, "sales") && (
+            <Panel title="Quotation or invoice">
+              {order.salesDocuments.length > 0 && <ul className="mb-3 space-y-1 text-sm">{order.salesDocuments.map((d) => <li key={d.id}><Link href={`/admin/sales/${d.id}`} className="font-mono underline">{d.number}</Link> <span className="text-muted">({d.kind === "QUOTATION" ? "quotation" : "invoice"}, {d.status.toLowerCase().replace("_", " ")})</span></li>)}</ul>}
+              <p className="mb-3 text-sm text-muted">Start a formal quotation or invoice from this request, then set the final prices.</p>
+              <div className="flex flex-wrap gap-2">
+                {(["QUOTATION", "INVOICE"] as const).map((k) => (
+                  <form key={k} action={salesDocFromOrderAction}><input type="hidden" name="orderId" value={order.id} /><input type="hidden" name="kind" value={k} /><input type="hidden" name="_back" value={`/admin/orders/${order.id}`} />
+                    <button className={`btn text-sm ${k === "INVOICE" ? "btn-primary" : "btn-outline"}`}>{k === "INVOICE" ? "Create invoice" : "Create quotation"}</button></form>
+                ))}
+              </div>
             </Panel>
           )}
           <Panel title="Online sheet"><SheetStatus id={order.id} syncedAt={order.sheetSyncedAt} error={order.sheetError} action={resendOrderToSheet} /></Panel>

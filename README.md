@@ -31,7 +31,7 @@ npm run dev                 # http://localhost:3100
 ```
 
 - `AUTH_SECRET`: at least 32 random characters, for example from `openssl rand -base64 48`.
-- `ADMIN_PASSWORD`: at least 12 characters. The seed creates `ADMIN_EMAIL` as a **Super admin**.
+- `ADMIN_PASSWORD`: at least 8 characters. The seed creates `ADMIN_EMAIL` as a **Super admin**.
 - Admin: <http://localhost:3100/admin> (also linked as "Staff login" in the footer).
 
 > In this working copy, `.env` is already filled with a generated local secret and admin password. Open `.env` to find them. It is git-ignored, so never commit it.
@@ -89,11 +89,30 @@ tests/                        Unit and integration tests
 | Role | Access |
 |---|---|
 | **Super admin** | Everything, including users, settings and the activity log |
-| **Manager** | Catalogue, pricing, stock, all orders/RFQs/inquiries, customers, website text, research, reports |
-| **Sales** | Dashboard, RFQs, orders, inquiries, customers |
-| **Content editor** | Products, categories, website text (no prices) |
+| **Manager** | Catalogue, pricing, stock, website requests, customers, sales, purchases, accounting, website text, research, reports |
+| **Sales** | Dashboard, website requests, customers, quotations and invoices. Cannot record payments |
+| **Content editor** | Products, categories, website text (no prices or finance) |
+| **Accountant** | Customers, quotations and invoices, purchases and suppliers, payments, expenses, accounts, reports |
 
 Every admin page and server action checks the role on the server. Changing a user's role or password, or deactivating them, signs them out immediately. Five failed logins lock an account for 15 minutes.
+
+### Sales, purchasing and accounting (admin)
+- **Customers:** website visitors are added automatically. Staff add walk-in, phone, WhatsApp and referral customers in **Customers**. Email is optional for these.
+- **Quotations & invoices** (`/admin/sales`):
+  - Make one for any customer, or start one from a website order or RFQ with **Create quotation / Create invoice**.
+  - Prices are per kg, and quantities can be in KG or MT. Discount, shipping and tax are added on top.
+  - Documents start as drafts. A quotation can be marked sent, accepted or declined, then **converted to an invoice**.
+  - **Issuing** an invoice deducts tracked stock. If a confirmed website order already took the stock, it isn't taken twice.
+  - Each document has a printable page (`/invoice/NUMBER?k=…`) that staff can send to the customer on WhatsApp. Bank and mobile money details come from **Settings → Invoices**.
+- **Payments:** record full or part payments on an invoice by cash, bank transfer, EVC Plus, Zaad, eDahab, Sahal, cheque or card. The invoice moves to *Part paid* or *Paid* automatically. A payment can't be more than the balance due. To void an invoice, delete its payments first.
+- **Purchases and suppliers:** each purchase goes draft → ordered → received. **Receiving adds the goods to stock** and starts stock tracking for that product. Supplier payments are recorded on the purchase. Cancelling a received purchase removes the stock again.
+- **Accounting:**
+  - **Expenses** (transport, customs, packaging, wages, rent and so on).
+  - **Accounts** for your cash box, bank and mobile money wallets, with live balances.
+  - **Overview:** profit estimate, cash flow, money owed to you (with how late it is), money you owe suppliers, and expenses by category, for any period.
+  - **CSV exports** of invoices, payments, purchases and expenses. They open in Excel.
+- **Numbers:** `ADI-QUO-` quotations, `ADI-INV-` invoices, `ADI-PO-` purchases, `ADI-RCT-` receipts, `ADI-PAY-` payments out, `ADI-EXP-` expenses.
+- The profit figure is a management estimate (sales − purchases − expenses in the period). It isn't a substitute for formal accounts.
 
 ### Editing the website without code
 - **Products, categories, images, specifications, translations, SEO:** Admin → Products / Categories.

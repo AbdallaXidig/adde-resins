@@ -135,8 +135,8 @@ const products: Sample[] = [
 async function main() {
   const email = process.env.ADMIN_EMAIL?.toLowerCase().trim();
   const password = process.env.ADMIN_PASSWORD;
-  if (!email || !password || password.length < 12) {
-    throw new Error("Set ADMIN_EMAIL and ADMIN_PASSWORD (12+ characters) before seeding.");
+  if (!email || !password || password.length < 8) {
+    throw new Error("Set ADMIN_EMAIL and ADMIN_PASSWORD (8+ characters) before seeding.");
   }
   await prisma.user.upsert({
     where: { email },

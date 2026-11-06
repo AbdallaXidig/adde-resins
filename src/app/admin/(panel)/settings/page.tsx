@@ -32,6 +32,11 @@ export default async function Settings({ searchParams }: { searchParams: FlashPa
           <label className="flex items-center gap-2"><input type="checkbox" name="showSampleBanner" defaultChecked={s.showSampleBanner} /> Show the sample-data notice while any published product is sample data</label>
           <div className="mt-4 max-w-xs"><label htmlFor="bulkThresholdKg" className="field-label">Suggest a quotation above (kg)</label><input id="bulkThresholdKg" name="bulkThresholdKg" type="number" min="0" defaultValue={s.bulkThresholdKg} className="field" /></div>
         </Panel>
+        <Panel title="Invoices">
+          <label htmlFor="paymentInstructions" className="field-label">Payment instructions printed on every invoice</label>
+          <textarea id="paymentInstructions" name="paymentInstructions" rows={5} maxLength={2000} defaultValue={s.paymentInstructions} className="field" placeholder={"Bank: …  Account name: Adde International L.L.C.  Account no.: …\nEVC Plus: …\nPlease quote the invoice number with your payment."} />
+          <p className="mt-1 text-xs text-muted">Only shown on invoices, not quotations. Leave empty to leave it off.</p>
+        </Panel>
         <Panel title="Online payments">
           <p className="text-sm text-muted">No payment provider is connected. Checkout saves the order and your team follows up with an invoice. A developer can connect a provider later through <code>PAYMENT_PROVIDER</code> and <code>src/lib/payments.ts</code>.</p>
         </Panel>

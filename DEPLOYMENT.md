@@ -22,7 +22,7 @@ Set these on the host (never commit them):
 | `DATABASE_URL` | yes | Connection string from step 1 |
 | `AUTH_SECRET` | yes | 32+ random characters, from `openssl rand -base64 48`. Changing it signs everyone out |
 | `NEXT_PUBLIC_SITE_URL` | yes | Public address, e.g. `https://www.addeinternational.com`. Used in canonical URLs, the sitemap and Open Graph tags. Must be set **before** `npm run build` |
-| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | first deploy | Used by the seed to create the first Super admin (password 12+ characters). Remove `ADMIN_PASSWORD` once you have signed in and changed it |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | first deploy | Used by the seed to create the first Super admin (password 8+ characters). Remove `ADMIN_PASSWORD` once you have signed in and changed it |
 | `UPLOAD_DIR` | recommended | Absolute path on the persistent disk, e.g. `/var/data/uploads` |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `NOTIFY_EMAIL` | optional | Staff email alerts for new submissions |
 | `SHEET_WEBHOOK_URL`, `SHEET_WEBHOOK_SECRET` | optional | Copies every quotation, order, RFQ and WhatsApp cart click to a Google Sheet. See [docs/GOOGLE-SHEET.md](docs/GOOGLE-SHEET.md) |

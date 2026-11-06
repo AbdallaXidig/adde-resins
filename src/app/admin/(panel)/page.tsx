@@ -4,7 +4,9 @@ import { prisma } from "@/lib/db";
 import { requirePermission } from "@/lib/auth";
 import { can } from "@/lib/permissions";
 import { Flash, type FlashParams } from "@/components/admin/Flash";
-import { Empty, Panel, PageHeader, StatusBadge, fmtDate, fmtQty } from "@/components/admin/ui";
+import { Empty, Panel, PageHeader, StatusBadge, fmtDate, fmtMoney, fmtQty } from "@/components/admin/ui";
+import { Stat } from "@/components/admin/finance-ui";
+import { accountBalances } from "@/lib/finance";
 
 export const metadata = { title: "Dashboard" };
 
@@ -33,6 +35,24 @@ export default async function Dashboard({ searchParams }: { searchParams: FlashP
     { label: "Published products", value: published, href: "/admin/products", show: can(user.role, "products") },
   ].filter((t) => t.show);
 
+  // Money at a glance, for roles that handle sales or accounts.
+  const showSales = can(user.role, "sales"), showMoney = can(user.role, "accounting"), showBuying = can(user.role, "purchases");
+  const monthStart = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), 1));
+  const [salesMonth, receivedMonth, openInv, openPur, balances] = await Promise.all([
+    showSales || showMoney ? prisma.salesDocument.aggregate({ where: { kind: "INVOICE", status: { in: ["ISSUED", "PARTIALLY_PAID", "PAID"] }, issueDate: { gte: monthStart } }, _sum: { total: true } }) : null,
+    showMoney ? prisma.payment.aggregate({ where: { direction: "IN", date: { gte: monthStart } }, _sum: { amount: true } }) : null,
+    showSales || showMoney ? prisma.salesDocument.aggregate({ where: { kind: "INVOICE", status: { in: ["ISSUED", "PARTIALLY_PAID"] } }, _sum: { total: true, amountPaid: true } }) : null,
+    showMoney || showBuying ? prisma.purchase.aggregate({ where: { status: { in: ["ORDERED", "RECEIVED"] } }, _sum: { total: true, amountPaid: true } }) : null,
+    showMoney ? accountBalances() : null,
+  ]);
+  const money = [
+    salesMonth && { label: "Invoiced this month", value: fmtMoney(Number(salesMonth._sum.total ?? 0)), href: "/admin/sales?kind=INVOICE" },
+    receivedMonth && { label: "Received this month", value: fmtMoney(Number(receivedMonth._sum.amount ?? 0)), href: "/admin/accounting/payments?direction=IN&period=this-month", tone: "ok" as const },
+    openInv && { label: "Customers owe you", value: fmtMoney(Number(openInv._sum.total ?? 0) - Number(openInv._sum.amountPaid ?? 0)), href: showMoney ? "/admin/accounting#receivables" : "/admin/sales?kind=INVOICE&status=ISSUED" },
+    openPur && { label: "You owe suppliers", value: fmtMoney(Number(openPur._sum.total ?? 0) - Number(openPur._sum.amountPaid ?? 0)), href: "/admin/purchases" },
+    balances && { label: "Cash in accounts", value: fmtMoney(balances.list.filter((a) => a.active).reduce((t, a) => t + a.balance, 0)), href: "/admin/accounting/accounts" },
+  ].filter(Boolean) as { label: string; value: string; href: string; tone?: "ok" }[];
+
   return (
     <>
       <Flash saved={sp.saved} error={sp.denied ? "Your role does not have access to that section." : sp.error} />
@@ -41,6 +61,19 @@ export default async function Dashboard({ searchParams }: { searchParams: FlashP
         <p className="mb-6 rounded-lg border border-[#f3c9a8] bg-[#fdf1e7] px-4 py-3 text-sm text-[#7a3407]">
           {demo} published product{demo === 1 ? " is" : "s are"} still sample data. Replace the details with verified information, then untick “Sample data” on each product. {drafts > 0 && `${drafts} draft product${drafts === 1 ? " is" : "s are"} hidden from the website.`}
         </p>
+      )}
+      {(showSales || showBuying || showMoney) && (
+        <div className="mb-6 flex flex-wrap gap-2">
+          {showSales && <><a href="/admin/sales/new?kind=INVOICE" className="btn btn-primary text-sm">New invoice</a><a href="/admin/sales/new?kind=QUOTATION" className="btn btn-outline text-sm">New quotation</a></>}
+          {showBuying && <a href="/admin/purchases/new" className="btn btn-outline text-sm">New purchase</a>}
+          {showMoney && <a href="/admin/accounting/expenses" className="btn btn-outline text-sm">Record expense</a>}
+          {can(user.role, "customers") && <a href="/admin/customers" className="btn btn-outline text-sm">Add customer</a>}
+        </div>
+      )}
+      {money.length > 0 && (
+        <div className="mb-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          {money.map((m) => <Stat key={m.label} label={m.label} value={m.value} href={m.href} tone={m.tone} />)}
+        </div>
       )}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {tiles.map((t) => (
