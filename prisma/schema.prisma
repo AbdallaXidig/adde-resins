@@ -1,0 +1,395 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Access control ----------
+
+enum Role {
+  SUPER_ADMIN
+  MANAGER
+  SALES
+  CONTENT
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         Role      @default(SALES)
+  active       Boolean   @default(true)
+  // Bumped on password or role change, which invalidates existing sessions.
+  sessionVersion Int     @default(1)
+  failedLogins Int       @default(0)
+  lockedUntil  DateTime?
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  statusEvents StatusEvent[]
+  auditLogs    AuditLog[]
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String?
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// ---------- Catalogue ----------
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Availability {
+  AVAILABLE
+  ON_REQUEST
+  OUT_OF_SEASON
+  UNAVAILABLE
+}
+
+enum QuantityUnit {
+  KG
+  MT
+}
+
+model Category {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  name         String
+  description  String?
+  sortOrder    Int       @default(0)
+  // { so: { name, description }, ar: { name, description } }
+  translations Json      @default("{}")
+  products     Product[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Product {
+  id               String        @id @default(cuid())
+  slug             String        @unique
+  name             String
+  botanicalName    String?
+  localName        String?
+  shortDescription String
+  description      String
+  botanicalInfo    String?
+  origin           String?
+  grade            String?
+  gradeOptions     String[]      @default([])
+  gradingInfo      String?
+  packagingOptions String[]      @default([])
+  quantityOptions  String[]      @default([])
+  moq              Decimal?      @db.Decimal(12, 2)
+  moqUnit          QuantityUnit  @default(KG)
+  // Null price means "price on request". Prices are never shown unless priceVisible.
+  pricePerKg       Decimal?      @db.Decimal(12, 2)
+  currency         String        @default("USD")
+  priceVisible     Boolean       @default(false)
+  // Null stock means stock is not tracked for this product.
+  stockKg          Decimal?      @db.Decimal(14, 2)
+  availability     Availability  @default(ON_REQUEST)
+  status           PublishStatus @default(DRAFT)
+  cartEnabled      Boolean       @default(true)
+  featured         Boolean       @default(false)
+  sortOrder        Int           @default(0)
+  // Sample record: rendered with a visible "sample data" label until verified.
+  isDemo           Boolean       @default(false)
+  // Staff confirmation that the listing has been checked against real stock and paperwork.
+  verified         Boolean       @default(false)
+  seoTitle         String?
+  seoDescription   String?
+  // { so: { name, shortDescription, description }, ar: { ... } }
+  translations     Json          @default("{}")
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  images         ProductImage[]
+  specs          ProductSpec[]
+  orderItems     OrderItem[]
+  rfqs           Rfq[]
+  stockMovements StockMovement[]
+  research       ResearchEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, sortOrder])
+  @@index([categoryId])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String
+  sortOrder Int     @default(0)
+  // True for licensed stand-in photography that should be replaced by company photos.
+  isPlaceholder Boolean @default(false)
+
+  @@index([productId, sortOrder])
+}
+
+model ProductSpec {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label     String
+  value     String
+  verified  Boolean @default(false)
+  sortOrder Int     @default(0)
+
+  @@index([productId, sortOrder])
+}
+
+model StockMovement {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  changeKg  Decimal  @db.Decimal(14, 2)
+  reason    String
+  orderId   String?
+  createdAt DateTime @default(now())
+
+  @@index([productId, createdAt])
+}
+
+// ---------- Customers and business workflows ----------
+
+model Customer {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  company   String?
+  phone     String?
+  country   String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders    Order[]
+  rfqs      Rfq[]
+  inquiries Inquiry[]
+}
+
+enum WorkflowStatus {
+  PENDING
+  UNDER_REVIEW
+  QUOTATION_SENT
+  CONFIRMED
+  PROCESSING
+  READY_FOR_SHIPMENT
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum OrderType {
+  ORDER
+  QUOTE_REQUEST
+}
+
+model Rfq {
+  id                 String         @id @default(cuid())
+  reference          String         @unique
+  customerId         String
+  customer           Customer       @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  productId          String?
+  product            Product?       @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName        String
+  grade              String?
+  quantity           Decimal        @db.Decimal(14, 3)
+  unit               QuantityUnit
+  destinationCountry String
+  destinationPort    String
+  deliveryDate       DateTime?
+  packaging          String?
+  requirements       String?
+  status             WorkflowStatus @default(PENDING)
+  adminNotes         String?
+  locale             String         @default("en")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  statusEvents StatusEvent[]
+
+  @@index([status, createdAt])
+}
+
+model Order {
+  id                 String         @id @default(cuid())
+  reference          String         @unique
+  type               OrderType      @default(ORDER)
+  customerId         String
+  customer           Customer       @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  shippingCountry    String
+  shippingPort       String?
+  shippingAddress    String?
+  notes              String?
+  // Totals only cover lines with a published price; unpriced lines are quoted by staff.
+  subtotal           Decimal?       @db.Decimal(14, 2)
+  currency           String         @default("USD")
+  hasUnpricedItems   Boolean        @default(false)
+  // Reserved for future online payments. No provider is connected.
+  paymentStatus      String         @default("NOT_REQUESTED")
+  paymentProvider    String?
+  status             WorkflowStatus @default(PENDING)
+  stockCommitted     Boolean        @default(false)
+  adminNotes         String?
+  locale             String         @default("en")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  items        OrderItem[]
+  statusEvents StatusEvent[]
+
+  @@index([status, createdAt])
+}
+
+model OrderItem {
+  id          String       @id @default(cuid())
+  orderId     String
+  order       Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName String
+  grade       String?
+  packaging   String?
+  quantity    Decimal      @db.Decimal(14, 3)
+  unit        QuantityUnit
+  unitPricePerKg Decimal?  @db.Decimal(12, 2)
+  lineTotal   Decimal?     @db.Decimal(14, 2)
+}
+
+model StatusEvent {
+  id         String          @id @default(cuid())
+  rfqId      String?
+  rfq        Rfq?            @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  orderId    String?
+  order      Order?          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus WorkflowStatus?
+  toStatus   WorkflowStatus
+  note       String?
+  userId     String?
+  user       User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt  DateTime        @default(now())
+
+  @@index([rfqId])
+  @@index([orderId])
+}
+
+enum InquiryStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  ARCHIVED
+}
+
+model Inquiry {
+  id         String        @id @default(cuid())
+  reference  String        @unique
+  customerId String?
+  customer   Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  name       String
+  email      String
+  phone      String?
+  company    String?
+  country    String?
+  category   String
+  subject    String?
+  message    String
+  status     InquiryStatus @default(NEW)
+  adminNotes String?
+  locale     String        @default("en")
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([status, createdAt])
+}
+
+// Yearly per-prefix counter so references stay short, ordered and unique under concurrency.
+model ReferenceCounter {
+  key   String @id
+  value Int    @default(0)
+}
+
+// ---------- Site content and settings ----------
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+// Overrides any translation string by dotted key, per locale, without a code change.
+model ContentBlock {
+  id        String   @id @default(cuid())
+  key       String
+  locale    String
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@unique([key, locale])
+}
+
+// ---------- Internal product research (never shown publicly) ----------
+
+enum VerificationStatus {
+  UNVERIFIED
+  VERIFIED
+  REJECTED
+}
+
+model Supplier {
+  id        String   @id @default(cuid())
+  name      String
+  country   String?
+  contact   String?
+  email     String?
+  phone     String?
+  website   String?
+  notes     String?
+  active    Boolean  @default(true)
+  entries   ResearchEntry[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ResearchEntry {
+  id            String             @id @default(cuid())
+  title         String
+  productId     String?
+  product       Product?           @relation(fields: [productId], references: [id], onDelete: SetNull)
+  supplierId    String?
+  supplier      Supplier?          @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  botanicalName String?
+  grade         String?
+  specNotes     String?
+  sourceUrl     String?
+  purchaseCost  Decimal?           @db.Decimal(12, 2)
+  costCurrency  String             @default("USD")
+  costUnit      QuantityUnit       @default(KG)
+  status        VerificationStatus @default(UNVERIFIED)
+  verifiedBy    String?
+  verifiedAt    DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+}
