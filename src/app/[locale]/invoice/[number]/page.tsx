@@ -17,9 +17,11 @@ const qty = (n: number) => new Intl.NumberFormat("en", { maximumFractionDigits: 
 export default async function SalesDocumentPage({ params, searchParams }: { params: Promise<{ number: string }>; searchParams: Promise<{ k?: string }> }) {
   const [{ number }, { k }] = await Promise.all([params, searchParams]);
   if (!/^ADI-(QUO|INV)-\d{4}-\d{5,}$/.test(number) || typeof k !== "string" || k.length > 64) notFound();
-  const doc = await prisma.salesDocument.findUnique({ where: { number }, include: { customer: true, items: { orderBy: { sortOrder: "asc" } }, payments: { orderBy: { date: "asc" } } } });
+  const [doc, s] = await Promise.all([
+    prisma.salesDocument.findUnique({ where: { number }, include: { customer: true, items: { orderBy: { sortOrder: "asc" } }, payments: { orderBy: { date: "asc" } } } }),
+    getSettings(),
+  ]);
   if (!doc?.accessToken || !same(doc.accessToken, k)) notFound();
-  const s = await getSettings();
   const isQuote = doc.kind === "QUOTATION";
   const total = Number(doc.total), paid = Number(doc.amountPaid);
   const status = doc.status === "VOID" ? "VOID" : doc.status === "DRAFT" ? "DRAFT" : isQuote ? null : paid >= total && total > 0 ? "PAID" : paid > 0 ? "PART PAID" : null;

@@ -15,13 +15,20 @@ const config: NextConfig = {
   poweredByHeader: false,
   serverExternalPackages: ["sharp", "bcryptjs", "nodemailer"],
   images: {
-    formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60 * 60 * 24 * 30,
-    localPatterns: [{ pathname: "/assets/**" }, { pathname: "/media/**" }],
+    // Images are resized ahead of time (scripts/optimize-images.mjs and src/lib/upload.ts), not per request:
+    // resizing on demand overloaded the small server and made photos fail to load.
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+    imageSizes: [128, 256, 384],
+    deviceSizes: [640, 960, 1280, 1920],
   },
   experimental: { serverActions: { bodySizeLimit: "12mb" } },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // Let browsers keep photos and the logo instead of downloading them on every visit.
+      { source: "/assets/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" }] },
+    ];
   },
 };
 
