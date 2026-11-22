@@ -22,6 +22,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       <aside className="sticky top-0 z-30 flex items-center justify-between bg-brown px-3 py-2 lg:h-screen lg:flex-col lg:items-stretch lg:justify-start lg:overflow-y-auto lg:p-4">
         <Link href="/admin" className="font-serif text-lg text-white lg:mb-6 lg:px-3 lg:pt-2">Adde International<span className="block text-xs font-sans text-white/60">Administration</span></Link>
         <div className="flex items-center gap-1 lg:block">
+          <a href="/" target="_blank" className="grid size-11 place-items-center rounded-lg text-white lg:hidden" aria-label="View website" title="View website"><ExternalLink size={20} aria-hidden /></a>
           <form action={logoutAction} className="lg:hidden"><button type="submit" className="grid size-11 place-items-center rounded-lg text-white" aria-label="Sign out"><LogOut size={20} aria-hidden /></button></form>
           <AdminNav allowed={allowed} counts={{ rfqs, orders, inquiries, overdue }} />
         </div>
