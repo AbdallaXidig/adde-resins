@@ -167,7 +167,9 @@ export async function updateOrderStatus(id: string, to: WorkflowStatus, userId: 
     const order = await tx.order.findUniqueOrThrow({ where: { id }, include: { items: true } });
     if (order.status === to && !note) return;
 
-    const action = stockAction(to, order.stockCommitted);
+    let action = stockAction(to, order.stockCommitted);
+    // An invoice issued from this order has already taken the stock; don't take it twice.
+    if (action === "commit" && (await tx.salesDocument.count({ where: { orderId: id, kind: "INVOICE", stockCommitted: true } })) > 0) action = null;
     if (action) {
       const sign = action === "commit" ? -1 : 1;
       for (const item of order.items) {

@@ -640,3 +640,12 @@ model Expense {
   @@index([date])
   @@index([category])
 }
+
+// Admin-uploaded images, stored in the database so they survive restarts on hosts without a persistent disk.
+model MediaFile {
+  id          String   @id // "<uuid>.webp", served at /media/<id>
+  contentType String   @default("image/webp")
+  data        Bytes
+  size        Int
+  createdAt   DateTime @default(now())
+}

@@ -3,7 +3,7 @@ import { revalidateTag } from "next/cache";
 import { Prisma, type Availability, type PublishStatus, type QuantityUnit } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { audit, requirePermission } from "@/lib/auth";
-import { saveImage } from "@/lib/upload";
+import { deleteImage, saveImage } from "@/lib/upload";
 import { bool, done, fail, lines, num, optStr, slugify, str } from "@/lib/admin-helpers";
 
 const AVAIL: Availability[] = ["AVAILABLE", "ON_REQUEST", "OUT_OF_SEASON", "UNAVAILABLE"];
@@ -117,7 +117,7 @@ export async function updateProduct(f: FormData) {
   // Existing images: alt text, order, placeholder flag, removal.
   const images = await prisma.productImage.findMany({ where: { productId: id } });
   for (const img of images) {
-    if (bool(f, `img_remove_${img.id}`)) { await prisma.productImage.delete({ where: { id: img.id } }); continue; }
+    if (bool(f, `img_remove_${img.id}`)) { await prisma.productImage.delete({ where: { id: img.id } }); await deleteImage(img.url); continue; }
     await prisma.productImage.update({
       where: { id: img.id },
       data: { alt: str(f, `img_alt_${img.id}`, 200) || img.alt, sortOrder: Math.round(num(f, `img_order_${img.id}`) ?? img.sortOrder), isPlaceholder: bool(f, `img_placeholder_${img.id}`) },

@@ -39,13 +39,14 @@ npm start                     # serves on port 3100. Set PORT, or edit the start
 
 On later releases: `npm ci && npx prisma migrate deploy && npm run build && npm start`.
 
-### Example: Render
-- **Web Service:**
-  - Build command: `npm ci && npx prisma migrate deploy && npm run build`
-  - Start command: `npx next start -p $PORT`
-- **Disk:** mount at `/var/data` and set `UPLOAD_DIR=/var/data/uploads`.
-- **Database:** add a Render PostgreSQL and paste its *Internal Database URL* into `DATABASE_URL`.
-- **Seed:** run `npm run db:seed` once from the Render shell.
+### Example: Render (free) + Supabase (free)
+This is the set-up this project uses. Both are on free plans, so there is no monthly fee.
+- **Database:** Supabase project `adde-resins` (Frankfurt). The app uses its own login `adde_app` and a private schema `adde`, which Supabase's public API cannot reach. Tables are already created and seeded. Uploaded images are stored in the database (table `MediaFile`), so no disk is needed.
+- **Web service:** `render.yaml` in this repo. In Render: **New → Blueprint**, pick the GitHub repository, then fill in the secret values from `RENDER-SECRETS.txt` (kept only on your computer):
+  - `DATABASE_URL`, `AUTH_SECRET`
+  - `NEXT_PUBLIC_SITE_URL`: the Render address, e.g. `https://adde-resins.onrender.com`, or your own domain later.
+- Every push to `main` redeploys and applies new migrations automatically.
+- **Free plan limits:** the Render service sleeps after 15 minutes without visitors, and the first visit afterwards takes about a minute. Supabase free allows 500 MB of data and pauses a project only after a week with no activity at all. Upgrade either one later without changing code.
 
 ### Example: VPS (Ubuntu)
 - Install Node 20+ and run the commands above under a process manager (`pm2` or a systemd service).

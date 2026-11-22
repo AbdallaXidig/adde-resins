@@ -3,8 +3,9 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { PrismaClient } from "@prisma/client";
 import {
   FinanceError, convertQuotation, deletePayment, priceLines, recordPayment, saveSalesDocument, savePurchase,
-  setPurchaseStatus, setSalesStatus, createExpense, accountBalances,
+  setPurchaseStatus, setSalesStatus, createExpense, accountBalances, salesDocFromOrder,
 } from "@/lib/finance";
+import { updateOrderStatus } from "@/lib/workflows";
 
 const prisma = new PrismaClient();
 const tag = `fin-${Date.now()}`;
@@ -90,6 +91,24 @@ describe("sales, payments and stock", () => {
     await setSalesStatus(d.id, "ISSUED");
     await expect(saveSalesDocument(d.id, { ...base, lines: [{ description: "Bags", quantity: 1, unit: "KG", price: 1 }] }, "Test")).rejects.toThrow(/Only drafts/);
     await expect(saveSalesDocument(null, { ...base, discount: 999, lines: [{ description: "x", quantity: 1, unit: "KG", price: 1 }] }, "Test")).rejects.toThrow(/discount/);
+  });
+});
+
+describe("website orders and invoices share stock", () => {
+  it("takes stock once when an invoice is issued before the order is confirmed", async () => {
+    await prisma.product.update({ where: { id: productId }, data: { stockKg: 3000 } });
+    const order = await prisma.order.create({ data: { reference: `${tag}-ORD`, customerId, shippingCountry: "Oman", type: "QUOTE_REQUEST", items: { create: [{ productId, productName: "Test resin", quantity: 1, unit: "MT" }] } } });
+    const inv = await salesDocFromOrder(order.id, "INVOICE", "Test");
+    await prisma.salesItem.updateMany({ where: { documentId: inv.id }, data: { unitPrice: 8, lineTotal: 8000 } });
+    await prisma.salesDocument.update({ where: { id: inv.id }, data: { subtotal: 8000, total: 8000 } });
+    await setSalesStatus(inv.id, "ISSUED");
+    const stock = async () => Number((await prisma.product.findUniqueOrThrow({ where: { id: productId } })).stockKg);
+    expect(await stock()).toBe(2000);
+    await updateOrderStatus(order.id, "SHIPPED", null as unknown as string);
+    expect(await stock()).toBe(2000);
+    await setSalesStatus(inv.id, "VOID");
+    expect(await stock()).toBe(3000);
+    await prisma.order.delete({ where: { id: order.id } });
   });
 });
 

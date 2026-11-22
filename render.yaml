@@ -1,0 +1,32 @@
+# Render Blueprint: one free web service. The database is a free Supabase Postgres (set DATABASE_URL).
+# Dashboard → New → Blueprint → pick this repository.
+services:
+  - type: web
+    name: adde-resins
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: main
+    buildCommand: npm ci && npx prisma migrate deploy && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        sync: false
+      - key: AUTH_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+      - key: PAYMENT_PROVIDER
+        value: none
+      - key: SMTP_HOST
+        sync: false
+      - key: NOTIFY_EMAIL
+        sync: false
+      - key: SHEET_WEBHOOK_URL
+        sync: false
+      - key: SHEET_WEBHOOK_SECRET
+        sync: false

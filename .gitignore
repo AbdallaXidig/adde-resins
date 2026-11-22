@@ -14,3 +14,4 @@ playwright-report/
 *.log
 .claude/settings.local.json
 ADMIN-LOGIN.txt
+RENDER-SECRETS.txt
