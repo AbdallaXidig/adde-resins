@@ -43,7 +43,7 @@ export default async function ProductPage({ params }: { params: Params }) {
     description: product.description,
     image: product.images.map((i) => `${siteUrl()}${i.url}`),
     category: product.category.name,
-    brand: { "@type": "Brand", name: "Adde International" },
+    brand: { "@type": "Brand", name: "Adde General" },
     countryOfOrigin: product.origin ?? undefined,
     url: `${siteUrl()}${localePath(locale, `/products/${product.slug}`)}`,
     // An Offer is only listed when a real price has been published by staff.

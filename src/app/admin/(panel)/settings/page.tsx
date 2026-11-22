@@ -34,7 +34,7 @@ export default async function Settings({ searchParams }: { searchParams: FlashPa
         </Panel>
         <Panel title="Invoices">
           <label htmlFor="paymentInstructions" className="field-label">Payment instructions printed on every invoice</label>
-          <textarea id="paymentInstructions" name="paymentInstructions" rows={5} maxLength={2000} defaultValue={s.paymentInstructions} className="field" placeholder={"Bank: …  Account name: Adde International L.L.C.  Account no.: …\nEVC Plus: …\nPlease quote the invoice number with your payment."} />
+          <textarea id="paymentInstructions" name="paymentInstructions" rows={5} maxLength={2000} defaultValue={s.paymentInstructions} className="field" placeholder={"Bank: …  Account name: Adde General LLC  Account no.: …\nEVC Plus: …\nPlease quote the invoice number with your payment."} />
           <p className="mt-1 text-xs text-muted">Only shown on invoices, not quotations. Leave empty to leave it off.</p>
         </Panel>
         <Panel title="Online payments">

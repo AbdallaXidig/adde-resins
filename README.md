@@ -1,6 +1,6 @@
-# Adde International L.L.C. — Natural Resin Trading Website
+# Adde General LLC — Natural Resin Trading Website
 
-The website, catalogue, ordering system and admin dashboard for **Adde International L.L.C.** (established 2003). The company sources, grades and exports Somali frankincense, myrrh and other natural resins from Puntland, Somalia.
+The website, catalogue, ordering system and admin dashboard for **Adde General LLC** (established 2003). The company sources, grades and exports Somali frankincense, myrrh and other natural resins from Puntland, Somalia.
 
 - **Public site** in English, Somali and Arabic (right-to-left).
 - **Product catalogue** with search, filters and side-by-side comparison.
@@ -79,7 +79,7 @@ tests/                        Unit and integration tests
 ### Ordering rules
 - **Prices** always come from the database. The browser's cart never sends a price. Products without a published price show **"Price on request"** and are quoted by staff.
 - **No online payment is taken.** Checkout saves the order and staff follow up with an invoice. A payment provider can be added later through `PAYMENT_PROVIDER` and `src/lib/payments.ts`.
-- **Quotation documents:** after the cart form, the customer lands on their quotation (or pro-forma invoice for orders) at `/quotation/REFERENCE?k=…`. The link holds a random key, so references can't be guessed to view someone else's document. Unpriced lines show "Price on request". The document says it is not a tax invoice, and that Adde International confirms prices in writing before payment. Staff open it from the order page in the admin.
+- **Quotation documents:** after the cart form, the customer lands on their quotation (or pro-forma invoice for orders) at `/quotation/REFERENCE?k=…`. The link holds a random key, so references can't be guessed to view someone else's document. Unpriced lines show "Price on request". The document says it is not a tax invoice, and that Adde General confirms prices in writing before payment. Staff open it from the order page in the admin.
 - **Bulk orders:** a cart above the bulk threshold (Admin → Settings, default 1,000 kg) suggests sending it as a quotation request instead.
 - **Stock** is optional per product. When tracked, it is deducted when an order moves to *Confirmed* (or later) and returned if the order is cancelled. Every change is logged.
 - **Statuses:** Pending → Under Review → Quotation Sent → Confirmed → Processing → Ready for Shipment → Shipped → Delivered, or Cancelled. Each change is recorded on a timeline with the staff member's name.
@@ -136,7 +136,7 @@ Per-page titles and descriptions target the agreed keywords (Somali Frankincense
 
 ## Content honesty and images
 
-- **Photography** comes from Wikimedia Commons under open licences (CC BY, CC BY-SA, CC0 or public domain). Each photo is credited at `/image-credits` with its author, licence and real location. Photos taken outside Somalia (such as Boswellia trees in Oman) are captioned *representative* and are never presented as Adde International's own sites, stock or staff. Somali location photos include Bosaso port, Karin near Bosaso, Bosaso beach and the Golis mountains.
+- **Photography** comes from Wikimedia Commons under open licences (CC BY, CC BY-SA, CC0 or public domain). Each photo is credited at `/image-credits` with its author, licence and real location. Photos taken outside Somalia (such as Boswellia trees in Oman) are captioned *representative* and are never presented as Adde General's own sites, stock or staff. Somali location photos include Bosaso port, Karin near Bosaso, Bosaso beach and the Golis mountains.
 - **Replace with company photos** whenever possible. Upload them in Admin → Products and untick *Stock photo*. Entries marked `replaceWithCompanyPhoto` in `src/data/image-credits.json` are first in line.
 - Unsplash, Pexels and Pixabay block automated downloads, so none of their images are used. To add some, download them by hand under their licence and record them in the register.
 - **Reference websites** (densoma.com, kobacgt.so) were studied for industry structure only. `kulanc.com` did not resolve during research. No text, images, prices or branding were copied. Use **Admin → Product research** to record verified product data, suppliers, source links and purchase costs. That data is internal and never shown publicly.

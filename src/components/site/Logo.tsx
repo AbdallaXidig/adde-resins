@@ -6,10 +6,10 @@ export function Logo({ className, preload }: { className?: string; preload?: boo
   return (
     <Image
       src="/assets/brand/adde-logo.png"
-      alt="Adde International L.L.C., established 2003"
-      // Display-sized intrinsic dimensions (same 1225:460 ratio) so the optimiser serves a
+      alt="Adde General LLC, established 2003"
+      // Display-sized intrinsic dimensions (about 2.75:1 ratio) so the optimiser serves a
       // crisp 2x file rather than the 3840px variant.
-      width={320}
+      width={330}
       height={120}
       preload={preload}
       className={className}

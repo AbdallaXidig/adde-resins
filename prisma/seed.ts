@@ -44,7 +44,7 @@ const products: Sample[] = [
     images: [["/assets/img/resin-bowl-closeup.webp", "Golden frankincense resin tears in a clear glass bowl"], ["/assets/img/resin-pieces-black.webp", "Large pale frankincense pieces on a black background"], ["/assets/img/tree-papery-bark.webp", "Close-up of papery peeling Boswellia bark"]],
     specs: standardSpecs([["Form", "Natural resin tears and pieces"]]),
     seoTitle: "Boswellia Carterii Somalia | Frankincense Bulk Supplier",
-    seoDescription: "Boswellia carterii (Beeyo) frankincense from Somalia, supplied by grade. Request a wholesale quotation from Adde International.",
+    seoDescription: "Boswellia carterii (Beeyo) frankincense from Somalia, supplied by grade. Request a wholesale quotation from Adde General.",
     translations: { so: { name: "Luubaan Beeyo (Boswellia Carterii)", shortDescription: "Luubaan Soomaaliyeed oo caan ah, leh ur diiran oo xabag ah." }, ar: { name: "لبان (بوسويليا كارتيري)", shortDescription: "لبان صومالي كلاسيكي ذو رائحة دافئة وبلسمية." } },
   },
   {
@@ -58,7 +58,7 @@ const products: Sample[] = [
     images: [["/assets/img/resin-pale-glass.webp", "Pale cream olibanum resin in a glass dish"], ["/assets/img/tree-frereana-somalia.webp", "Boswellia frereana tree growing from rock in Somalia"]],
     specs: standardSpecs([["Form", "Natural resin pieces"]]),
     seoTitle: "Boswellia Frereana Supplier | Somali Maydi Frankincense",
-    seoDescription: "Boswellia frereana (Maydi) frankincense from northern Somalia. Request a wholesale quotation from Adde International.",
+    seoDescription: "Boswellia frereana (Maydi) frankincense from northern Somalia. Request a wholesale quotation from Adde General.",
     translations: { so: { name: "Luubaan Maydi (Boswellia Frereana)", shortDescription: "Maydi cad oo leh ur cusub oo liin ah." }, ar: { name: "لبان (بوسويليا فريريانا)", shortDescription: "لبان ميدي فاتح اللون برائحة منعشة تشبه الليمون." } },
   },
   {
@@ -72,7 +72,7 @@ const products: Sample[] = [
     images: [["/assets/img/myrrh-amber-pieces.webp", "Reddish amber myrrh pieces on a warm background"], ["/assets/img/myrrh-glass-dish.webp", "Dark rough myrrh lumps in a glass dish"], ["/assets/img/myrrh-pile.webp", "Pile of raw myrrh resin"]],
     specs: standardSpecs([["Form", "Natural resin pieces"]]),
     seoTitle: "Somali Myrrh Exporter | Commiphora Myrrha Wholesale",
-    seoDescription: "Commiphora myrrha (Malmal) resin from Somalia, supplied by grade. Request a wholesale quotation from Adde International.",
+    seoDescription: "Commiphora myrrha (Malmal) resin from Somalia, supplied by grade. Request a wholesale quotation from Adde General.",
     translations: { so: { name: "Malmal (Commiphora Myrrha)", shortDescription: "Malmal dabiici ah oo leh ur qoto dheer oo dhulka ah." }, ar: { name: "المر (كوميفورا ميرها)", shortDescription: "مر طبيعي برائحة ترابية غنية وطعم حلو مر." } },
   },
   {
@@ -100,7 +100,7 @@ const products: Sample[] = [
     images: [["/assets/img/resin-sack-mixed.webp", "Open sack of mixed frankincense pieces at a spice market"]],
     specs: standardSpecs([["Piece size", TBC], ["Colour", TBC]]),
     seoTitle: "Frankincense Grade B | Natural Resin Wholesale",
-    seoDescription: "Sorted Grade B frankincense for extraction and incense. Request a wholesale quotation from Adde International.",
+    seoDescription: "Sorted Grade B frankincense for extraction and incense. Request a wholesale quotation from Adde General.",
     translations: { so: { name: "Luubaan Darajada B", shortDescription: "Luubaan la kala soocay oo ku habboon soo saarista saliidda iyo foorida." }, ar: { name: "لبان الدرجة ب", shortDescription: "لبان مفروز عملي للتقطير والاستخلاص وخلطات البخور." } },
   },
   {

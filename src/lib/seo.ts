@@ -18,7 +18,7 @@ export function pageMetadata({ locale, path, title, description, image }: {
     description,
     alternates: { canonical: `${siteUrl()}${localePath(locale, path)}`, languages },
     openGraph: {
-      title, description, type: "website", siteName: "Adde International L.L.C.",
+      title, description, type: "website", siteName: "Adde General LLC",
       url: `${siteUrl()}${localePath(locale, path)}`, locale, images: [{ url: og }],
     },
     twitter: { card: "summary_large_image", title, description, images: [og] },

@@ -1,11 +1,11 @@
 {
   "meta": {
-    "defaultTitle": "Dhoofiyaha Luubaanka iyo Malmalka Soomaaliyeed | Adde International L.L.C.",
-    "defaultDescription": "Adde International L.L.C. waxay keentaa, kala soocdaa oo dibadda u dhoofisaa luubaan, malmal iyo xabagyo dabiici ah oo laga keenay Puntland. La aasaasay 2003.",
+    "defaultTitle": "Dhoofiyaha Luubaanka iyo Malmalka Soomaaliyeed | Adde General LLC",
+    "defaultDescription": "Adde General LLC waxay keentaa, kala soocdaa oo dibadda u dhoofisaa luubaan, malmal iyo xabagyo dabiici ah oo laga keenay Puntland. La aasaasay 2003.",
     "productsTitle": "Liiska Luubaanka iyo Malmalka | Xabag Jumlad ah",
     "productsDescription": "Daawo Boswellia Carterii, Boswellia Frereana iyo Commiphora Myrrha oo Soomaaliya laga keenay. Codso qiimo jumlad ah.",
     "quoteTitle": "Codso Qiimaynta Jumladda",
-    "contactTitle": "La Xiriir Adde International",
+    "contactTitle": "La Xiriir Adde General",
     "cartTitle": "Dalabkaaga"
   },
   "common": {
@@ -62,7 +62,7 @@
     "heroEyebrow": "Xabag dabiici ah oo ka timid Geeska Afrika",
     "heroTitle": "Luubaan & Malmal",
     "heroAccent": "Soomaaliya ilaa Adduunka",
-    "heroDescription": "Adde International waxay Puntland, Soomaaliya, ka keentaa, kala soocdaa oo u gudbisaa luubaanka Boswellia iyo malmalka Commiphora iibsadayaasha jumladda iyo warshadaha adduunka.",
+    "heroDescription": "Adde General waxay Puntland, Soomaaliya, ka keentaa, kala soocdaa oo u gudbisaa luubaanka Boswellia iyo malmalka Commiphora iibsadayaasha jumladda iyo warshadaha adduunka.",
     "heroPoints": ["Xabag dabiici ah", "Darajooyin la kala soocay", "Helitaan masuul ah", "Keenis jumlad ah"],
     "slideCaptions": ["Karin, agagaarka Boosaaso, Soomaaliya", "Luubaan (sawir tusaale ah)", "Dekedda Boosaaso, Soomaaliya"],
     "productsEyebrow": "Alaabtayada",
@@ -78,10 +78,10 @@
     ],
     "introEyebrow": "Shirkadda",
     "introTitle": "Shirkad Soomaaliyeed, oo ku taal halka xabagtu ka baxdo",
-    "introText": "Waqooyiga Soomaaliya waa mid ka mid ah gobollada ugu da'da weyn adduunka ee luubaanka. Adde International L.L.C., oo la aasaasay 2003, waxay isku xirtaa asalkan iyo iibsadayaasha dibadda: helitaanka xabagta, kala soocidda darajooyinka, iyo diyaarinta keenista suuqyada caalamka.",
+    "introText": "Waqooyiga Soomaaliya waa mid ka mid ah gobollada ugu da'da weyn adduunka ee luubaanka. Adde General LLC, oo la aasaasay 2003, waxay isku xirtaa asalkan iyo iibsadayaasha dibadda: helitaanka xabagta, kala soocidda darajooyinka, iyo diyaarinta keenista suuqyada caalamka.",
     "introCta": "Sheekadayada",
     "yearsLabel": "sano tan iyo aasaaskayagii 2003",
-    "whyEyebrow": "Maxaa Adde International loo doortaa",
+    "whyEyebrow": "Maxaa Adde General loo doortaa",
     "whyTitle": "Lammaane ganacsi oo aad si toos ah ula shaqayn karto",
     "why": [
       { "title": "Ku dhow asalka", "text": "Waxaan joognaa Soomaaliya, meel u dhow halka ay ka baxaan Boswellia iyo Commiphora." },
@@ -147,7 +147,7 @@
     "inquiryTitle": "Codso qiimayn alaabtan",
     "inquiryText": "Noo sheeg tirada iyo meesha loo dirayo. Waxaan kuugu jawaabaynaa qiimayn leh lambarkaaga tixraaca.",
     "askWhatsapp": "Ku weydii WhatsApp",
-    "whatsappText": "Salaan Adde International, waxaan xiiseynayaa {product}. Fadlan ii soo dira helitaanka iyo qiimaha.",
+    "whatsappText": "Salaan Adde General, waxaan xiiseynayaa {product}. Fadlan ii soo dira helitaanka iyo qiimaha.",
     "specNote": "Faahfaahinta lagu calaamadeeyay \"la xaqiijin doono\" waxaa lagu heshiiyaa qayb kasta ka hor rarka.",
     "photoNote": "Sawir tusaale ah. Qaybaha dhabta ah way kala duwan yihiin.",
     "unavailableNote": "Alaabtan hadda online lagama dalban karo. Weli qiimayn ayaad naga codsan kartaa."
@@ -249,14 +249,14 @@
     "or": "ama",
     "sendWhatsapp": "Gaarigan ku dir WhatsApp",
     "whatsappHint": "Wuxuu furayaa WhatsApp oo wata gaarigaaga iyo xogta aad kor ku qortay.",
-    "waIntro": "Salaan Adde International, waxaan rabaa qiimayn loogu talagalay:"
+    "waIntro": "Salaan Adde General, waxaan rabaa qiimayn loogu talagalay:"
   },
   "confirmation": {
     "title": "Mahadsanid. Codsigaaga waan helnay.",
     "text": "Fadlan kaydi lambarkan tixraaca oo ku xus fariin kasta oo ku saabsan codsigan.",
     "reference": "Lambarka tixraaca",
     "next": "Kooxdayadu way eegi doontaa codsigaaga waxayna kugu soo jawaabi doontaa iimayl. Jawaab degdeg ah, noogu soo dir lambarkaaga tixraaca WhatsApp.",
-    "whatsappText": "Salaan Adde International, lambarkayga tixraacu waa {ref}.",
+    "whatsappText": "Salaan Adde General, lambarkayga tixraacu waa {ref}.",
     "backHome": "Ku noqo bogga hore",
     "browse": "Eeg alaabta",
     "invalid": "Boggan kuma jiro lambar tixraac."
@@ -280,7 +280,7 @@
   },
   "services": { "eyebrow": "Adeegyadayada", "title": "Asalka ilaa dekeddaada", "text": "Waxaan taageernaa iibsadayaasha caalamiga ah silsiladda keenista oo dhan, laga bilaabo helitaanka xabagta Soomaaliya ilaa isku-dubbaridka dhoofinteeda.", "processTitle": "Sida aan u wada shaqayno", "cta": "Diyaar ma u tahay inaad ka wada hadasho dalabkaaga?" },
   "sourcing": { "eyebrow": "Helitaanka iyo tayada", "title": "Xabagta Soomaaliyeed, geedka ilaa qaybta", "text": "Sida luubaanka iyo malmalka loogu guro Soomaaliya, iyo sida loo kala sooco oo loo hubiyo ka hor dhoofinta.", "cta": "Ka wada hadal faahfaahinta dalabkaaga" },
-  "about": { "eyebrow": "Nagu saabsan", "title": "Shirkad ganacsi Soomaaliyeed, oo la aasaasay 2003", "text": "Adde International L.L.C. waxay isku xirtaa xabagyada dabiiciga ah ee Soomaaliya iyo iibsadayaasha adduunka.", "cta": "Nala shaqee" },
+  "about": { "eyebrow": "Nagu saabsan", "title": "Shirkad ganacsi Soomaaliyeed, oo la aasaasay 2003", "text": "Adde General LLC waxay isku xirtaa xabagyada dabiiciga ah ee Soomaaliya iyo iibsadayaasha adduunka.", "cta": "Nala shaqee" },
   "industries": { "eyebrow": "Warshadaha aan u adeegno", "title": "Xabag dabiici ah oo warshado badan loogu talagalay", "text": "Luubaanka iyo malmalka waxay leeyihiin isticmaallo badan. Noo sheeg isticmaalkaaga, waxaanan kaala hadlaynaa alaabta iyo darajooyinka ku habboon.", "cta": "Noo sheeg isticmaalkaaga" },
   "credits": { "title": "Ilaha sawirrada iyo shatiyada" },
   "error": {
@@ -298,7 +298,7 @@
     "readyText": "Kaydi ama daabac dukumeentigan oo hay lambarka tixraaca. Kooxdayadu waxay kugu xaqiijin doontaa qiimaha iyo helitaanka email ama WhatsApp.",
     "print": "Daabac / Kaydi PDF ahaan",
     "whatsapp": "Noogu soo dir WhatsApp",
-    "whatsappText": "Salaan Adde International, tani waa qiimayntayda {ref}: {link}",
+    "whatsappText": "Salaan Adde General, tani waa qiimayntayda {ref}: {link}",
     "continue": "Sii wad daalacashada",
     "reference": "Tixraac",
     "date": "Taariikh",
@@ -318,7 +318,7 @@
     "term1": "Si toos ah ayaa looga sameeyay qiimayaasha lagu daabacay websaydkayaga taariikhda la muujiyay.",
     "term2": "Alaabta lagu calaamadeeyay \"Qiimaha waa la weydiistaa\" kooxdayada ayaa qiimayn doonta.",
     "term3": "Rarka, caymiska, canshuuraha iyo khidmadaha bangiga kuma jiraan haddii aan qoraal lagu xaqiijin.",
-    "term4": "Qiimaha, tirada iyo helitaanka waxaa qoraal ku xaqiijinaya Adde International ka hor lacag bixin kasta. Tani ma aha invoice canshuureed.",
+    "term4": "Qiimaha, tirada iyo helitaanka waxaa qoraal ku xaqiijinaya Adde General ka hor lacag bixin kasta. Tani ma aha invoice canshuureed.",
     "sampleNote": "Dukumeentigan waxaa ku jira tusaalooyin liiska alaabta ah. Kooxdayadu waxay xaqiijin doontaa faahfaahinta dhabta ah."
   }
 }

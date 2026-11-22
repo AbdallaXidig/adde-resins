@@ -34,8 +34,8 @@ export function ContactLinks({ email, phone, reference, whatsapp }: { email: str
   const digits = phone?.replace(/\D/g, "");
   return (
     <div className="flex flex-wrap gap-2">
-      {email && <a className="btn btn-outline min-h-9 py-1.5 text-sm" href={`mailto:${email}?subject=${encodeURIComponent(`Adde International - ${reference}`)}`}>Email customer</a>}
-      {whatsapp !== false && digits && digits.length >= 8 && <a className="btn btn-whatsapp min-h-9 py-1.5 text-sm" target="_blank" rel="noopener noreferrer" href={`https://wa.me/${digits}?text=${encodeURIComponent(`Hello, this is Adde International regarding ${reference}.`)}`}>WhatsApp</a>}
+      {email && <a className="btn btn-outline min-h-9 py-1.5 text-sm" href={`mailto:${email}?subject=${encodeURIComponent(`Adde General - ${reference}`)}`}>Email customer</a>}
+      {whatsapp !== false && digits && digits.length >= 8 && <a className="btn btn-whatsapp min-h-9 py-1.5 text-sm" target="_blank" rel="noopener noreferrer" href={`https://wa.me/${digits}?text=${encodeURIComponent(`Hello, this is Adde General regarding ${reference}.`)}`}>WhatsApp</a>}
     </div>
   );
 }

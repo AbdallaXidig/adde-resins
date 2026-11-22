@@ -20,7 +20,7 @@ export type CompanySettings = {
 
 // Starting values. All are editable in Admin > Settings without a code change.
 export const DEFAULT_SETTINGS: CompanySettings = {
-  companyName: "Adde International L.L.C.",
+  companyName: "Adde General LLC",
   email: "info@addeinternational.com",
   phone: "+252 617 794 700",
   whatsapp: "252617794700",

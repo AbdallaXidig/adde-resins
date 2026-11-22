@@ -41,7 +41,7 @@ export default async function SalesDoc({ params, searchParams }: { params: Promi
   const back = `/admin/sales/${id}`;
   const link = doc.accessToken ? `${siteUrl()}/invoice/${doc.number}?k=${doc.accessToken}` : null;
   const phone = doc.customer.phone?.replace(/\D/g, "");
-  const waText = `Hello ${doc.customer.name}, here is your ${isQuote ? "quotation" : "invoice"} ${doc.number} from Adde International (${fmtMoney(total)}): ${link}`;
+  const waText = `Hello ${doc.customer.name}, here is your ${isQuote ? "quotation" : "invoice"} ${doc.number} from Adde General (${fmtMoney(total)}): ${link}`;
 
   return (
     <>

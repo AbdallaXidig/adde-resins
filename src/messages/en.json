@@ -1,19 +1,19 @@
 {
   "meta": {
-    "siteName": "Adde International L.L.C.",
-    "defaultTitle": "Somali Frankincense & Myrrh Exporter | Adde International L.L.C.",
-    "defaultDescription": "Adde International L.L.C. sources, grades and exports Somali frankincense, myrrh and natural resins from Puntland to wholesale buyers worldwide. Established 2003.",
+    "siteName": "Adde General LLC",
+    "defaultTitle": "Somali Frankincense & Myrrh Exporter | Adde General LLC",
+    "defaultDescription": "Adde General LLC sources, grades and exports Somali frankincense, myrrh and natural resins from Puntland to wholesale buyers worldwide. Established 2003.",
     "productsTitle": "Frankincense & Myrrh Catalogue | Natural Resin Wholesale",
     "productsDescription": "Browse Boswellia Carterii, Boswellia Frereana and Commiphora Myrrha from Somalia. Compare grades and request a wholesale quotation in kilograms or metric tons.",
     "servicesTitle": "Sourcing, Wholesale & Export Services",
     "servicesDescription": "Natural resin sourcing, grading, packaging, bulk fulfilment and export documentation coordination from Puntland, Somalia.",
     "sourcingTitle": "Sourcing & Quality of Somali Natural Resins",
     "sourcingDescription": "How Boswellia and Commiphora resins are harvested, sorted, graded and checked before export from Somalia.",
-    "aboutTitle": "About Adde International L.L.C.",
+    "aboutTitle": "About Adde General LLC",
     "aboutDescription": "A Somali company established in 2003, trading natural resins from Puntland to international markets.",
     "industriesTitle": "Industries Using Somali Frankincense & Myrrh",
     "industriesDescription": "Natural resin supply for pharmaceutical, nutraceutical, fragrance, aromatherapy, cosmetic, incense and natural product manufacturers.",
-    "contactTitle": "Contact Adde International",
+    "contactTitle": "Contact Adde General",
     "contactDescription": "Send an inquiry to our team by form, email, telephone or WhatsApp.",
     "quoteTitle": "Request a Wholesale Quotation",
     "quoteDescription": "Tell us the resin, grade, quantity and destination port. Every request receives a reference number.",
@@ -77,7 +77,7 @@
     "heroEyebrow": "Natural resins from the Horn of Africa",
     "heroTitle": "Frankincense & Myrrh",
     "heroAccent": "From Somalia to the World",
-    "heroDescription": "Adde International sources, sorts and supplies Boswellia frankincense and Commiphora myrrh from Puntland, Somalia, for wholesale buyers and manufacturers worldwide.",
+    "heroDescription": "Adde General sources, sorts and supplies Boswellia frankincense and Commiphora myrrh from Puntland, Somalia, for wholesale buyers and manufacturers worldwide.",
     "heroPoints": ["Natural resin", "Graded and sorted", "Responsible sourcing", "Wholesale supply"],
     "slideCaptions": ["Karin, near Bosaso, Somalia", "Frankincense tears (representative photo)", "Bosaso port, Somalia"],
     "productsEyebrow": "Our products",
@@ -93,10 +93,10 @@
     ],
     "introEyebrow": "About the company",
     "introTitle": "A Somali company, rooted where the resin grows",
-    "introText": "Northern Somalia is one of the oldest frankincense regions in the world. Adde International L.L.C., established in 2003, connects this origin with buyers abroad: sourcing resin, sorting it by grade, and arranging supply to international markets.",
+    "introText": "Northern Somalia is one of the oldest frankincense regions in the world. Adde General LLC, established in 2003, connects this origin with buyers abroad: sourcing resin, sorting it by grade, and arranging supply to international markets.",
     "introCta": "Our story",
     "yearsLabel": "years since our founding in 2003",
-    "whyEyebrow": "Why Adde International",
+    "whyEyebrow": "Why Adde General",
     "whyTitle": "A trading partner you can work with directly",
     "why": [
       { "title": "Close to origin", "text": "Based in Somalia, near the regions where Boswellia and Commiphora grow." },
@@ -167,7 +167,7 @@
     "inquiryTitle": "Request a quotation for this product",
     "inquiryText": "Share your quantity and destination. We reply with a quotation under your reference number.",
     "askWhatsapp": "Ask on WhatsApp",
-    "whatsappText": "Hello Adde International, I am interested in {product}. Please share availability and a quotation.",
+    "whatsappText": "Hello Adde General, I am interested in {product}. Please share availability and a quotation.",
     "specNote": "Specifications marked \"to be confirmed\" are agreed for each lot before shipment.",
     "photoNote": "Representative photo. Actual lots vary, and lot samples can be discussed with your quotation.",
     "unavailableNote": "This product cannot be ordered online right now. You can still ask us for a quotation."
@@ -269,14 +269,14 @@
     "or": "or",
     "sendWhatsapp": "Send this cart on WhatsApp",
     "whatsappHint": "Opens WhatsApp with your cart and any details you typed above.",
-    "waIntro": "Hello Adde International, I would like a quotation for:"
+    "waIntro": "Hello Adde General, I would like a quotation for:"
   },
   "confirmation": {
     "title": "Thank you. We have received your request.",
     "text": "Please keep this reference number and quote it in any messages about this request.",
     "reference": "Reference number",
     "next": "Our team will review your request and reply by email. For a faster response, send us your reference number on WhatsApp.",
-    "whatsappText": "Hello Adde International, my reference number is {ref}.",
+    "whatsappText": "Hello Adde General, my reference number is {ref}.",
     "backHome": "Back to home",
     "browse": "Browse products",
     "invalid": "We could not find a reference number on this page."
@@ -350,9 +350,9 @@
   "about": {
     "eyebrow": "About us",
     "title": "A Somali trading company, established in 2003",
-    "text": "Adde International L.L.C. connects Somalia's natural resins with buyers around the world.",
+    "text": "Adde General LLC connects Somalia's natural resins with buyers around the world.",
     "historyTitle": "Our history",
-    "history": "Adde International L.L.C. was established in 2003. Since then, the company has built its experience in trade from Somalia, working in a region known for its frankincense and myrrh for thousands of years. Today we source, supply and export these resins to international markets from our presence in Puntland.",
+    "history": "Adde General LLC was established in 2003. Since then, the company has built its experience in trade from Somalia, working in a region known for its frankincense and myrrh for thousands of years. Today we source, supply and export these resins to international markets from our presence in Puntland.",
     "missionTitle": "Mission",
     "mission": "To supply natural resins from Somalia reliably and honestly, while creating lasting value for buyers and for the communities who harvest them.",
     "visionTitle": "Vision",
@@ -392,7 +392,7 @@
   },
   "credits": {
     "title": "Image credits and licences",
-    "text": "Photographs on this website are used under open licences and credited below. Photos marked representative illustrate the material or subject in general. They do not show Adde International's own stock, sites, facilities or staff.",
+    "text": "Photographs on this website are used under open licences and credited below. Photos marked representative illustrate the material or subject in general. They do not show Adde General's own stock, sites, facilities or staff.",
     "photo": "Photo",
     "author": "Author",
     "licence": "Licence",
@@ -423,7 +423,7 @@
     "readyText": "Save or print this document and keep the reference number. Our team will confirm prices and availability by email or WhatsApp.",
     "print": "Print / Save as PDF",
     "whatsapp": "Send to us on WhatsApp",
-    "whatsappText": "Hello Adde International, here is my quotation {ref}: {link}",
+    "whatsappText": "Hello Adde General, here is my quotation {ref}: {link}",
     "continue": "Continue browsing",
     "reference": "Reference",
     "date": "Date",
@@ -443,7 +443,7 @@
     "term1": "Generated automatically from the prices published on our website on the date shown.",
     "term2": "Items marked \"Price on request\" will be priced by our team.",
     "term3": "Freight, insurance, duties and bank charges are not included unless confirmed in writing.",
-    "term4": "Prices, quantities and availability are confirmed in writing by Adde International before any payment. This is not a tax invoice.",
+    "term4": "Prices, quantities and availability are confirmed in writing by Adde General before any payment. This is not a tax invoice.",
     "sampleNote": "This document includes sample catalogue listings. Our team will confirm the actual product details."
   }
 }

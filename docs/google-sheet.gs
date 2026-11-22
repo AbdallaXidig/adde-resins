@@ -1,5 +1,5 @@
 /**
- * Adde International: lead tracking sheet.
+ * Adde General: lead tracking sheet.
  *
  * Paste this into Extensions > Apps Script of your Google Sheet, set SECRET to the same value as
  * SHEET_WEBHOOK_SECRET on the website, then Deploy > New deployment > Web app
